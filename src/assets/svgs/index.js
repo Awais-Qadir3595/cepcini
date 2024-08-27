@@ -1,0 +1,10 @@
+export {default as Logo} from './logo.svg';
+// export {default as SplashData} from './splashData.svg';
+export {default as SplashData} from './Illustration.svg';
+export {default as Countries} from './coutries.svg';
+export {default as CheckboxEmpty} from './checkboxEmpty.svg';
+export {default as SalesIcon} from './salesIcon.svg';
+export {default as DashboardTab} from './dashboardTab.svg';
+export {default as Tickets} from './tickets.svg';
+export {default as IncomeReport} from './incomeReport.svg';
+export {default as Products} from './products.svg';
