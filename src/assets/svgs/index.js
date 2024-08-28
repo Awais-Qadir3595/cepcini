@@ -8,3 +8,6 @@ export {default as DashboardTab} from './dashboardTab.svg';
 export {default as Tickets} from './tickets.svg';
 export {default as IncomeReport} from './incomeReport.svg';
 export {default as Products} from './products.svg';
+export {default as ImagePerson} from './image.svg';
+export {default as NotificationIcon} from './notificationIcon.svg';
+export {default as OptionIcon} from './optionIcon.svg';
