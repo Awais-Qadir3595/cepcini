@@ -3207,6 +3207,7 @@ __metadata:
     react-native: 0.75.2
     react-native-chart-kit: ^6.12.0
     react-native-picker-select: ^9.3.1
+    react-native-pie-chart: ^3.0.2
     react-native-safe-area-context: ^4.10.9
     react-native-screens: ^3.34.0
     react-native-svg: ^15.6.0
@@ -4325,6 +4326,22 @@ __metadata:
   version: 3.1.3
   resolution: "csstype@npm:3.1.3"
   checksum: 8db785cc92d259102725b3c694ec0c823f5619a84741b5c7991b8ad135dfaa66093038a1cc63e03361a6cd28d122be48f2106ae72334e067dd619a51f49eddf7
+  languageName: node
+  linkType: hard
+
+"d3-path@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "d3-path@npm:3.1.0"
+  checksum: 2306f1bd9191e1eac895ec13e3064f732a85f243d6e627d242a313f9777756838a2215ea11562f0c7630c7c3b16a19ec1fe0948b1c82f3317fac55882f6ee5d8
+  languageName: node
+  linkType: hard
+
+"d3-shape@npm:3.2.0":
+  version: 3.2.0
+  resolution: "d3-shape@npm:3.2.0"
+  dependencies:
+    d3-path: ^3.1.0
+  checksum: de2af5fc9a93036a7b68581ca0bfc4aca2d5a328aa7ba7064c11aedd44d24f310c20c40157cb654359d4c15c3ef369f95ee53d71221017276e34172c7b719cfa
   languageName: node
   linkType: hard
 
@@ -8460,6 +8477,19 @@ __metadata:
   peerDependencies:
     "@react-native-picker/picker": ^2.4.0
   checksum: ba03c79bff736f225f6cf06a971a5058739ef27c26d2f66edf31e80250fc40be29085d4b15a35339c31b4d4830d362594f8d5933a25a0f2f1f9d702189e2d611
+  languageName: node
+  linkType: hard
+
+"react-native-pie-chart@npm:^3.0.2":
+  version: 3.0.2
+  resolution: "react-native-pie-chart@npm:3.0.2"
+  dependencies:
+    d3-shape: 3.2.0
+  peerDependencies:
+    react: ">=16.14.0"
+    react-native: ">=0.69.0"
+    react-native-svg: ">=13.0.0"
+  checksum: 3fa9064c94a1d135558218a9464f4359c65223519e0c2fd3d9d83fdfd47fd35e7d7abc69f4f960bf752330eb6f496febfc9ca384a0d213d792296d2cb8b77922
   languageName: node
   linkType: hard
 

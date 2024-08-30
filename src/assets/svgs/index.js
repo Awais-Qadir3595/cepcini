@@ -18,3 +18,7 @@ export {default as OpenTickets} from './openTickets.svg';
 export {default as TotalTickets} from './totalTickets.svg';
 export {default as OpenticketsAmount} from './openticketsAmount.svg';
 export {default as TotalTicketsBlack} from './totalTicketsBlack.svg';
+export {default as BackIcon} from './backIcon.svg';
+export {default as SearchIcon} from './searchIcon.svg';
+export {default as DeleteIcon} from './deleteIcon.svg';
+export {default as EditIcon} from './editIcon.svg';

@@ -126,6 +126,7 @@ const MyTabs = () => {
 
   return (
     <Tab.Navigator
+    initialRouteName="Dashboard"
       screenOptions={{
         tabBarShowLabel: false,
         tabBarStyle: {

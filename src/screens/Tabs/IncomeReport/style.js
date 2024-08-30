@@ -1,10 +1,34 @@
 import { StyleSheet } from "react-native";
-const styles=StyleSheet.create({
+import { colorsTheme } from "../../../Services/Color";
+const styles = StyleSheet.create({
 
-    main:{
-        flex:1,margin:5,alignItems:'center',justifyContent:'space-evenly',
-        backgroundColor:'white'
+    main: {
+        flex: 1, backgroundColor: 'white', padding: 10
     },
-    
+    statusRow: {
+        alignItems: 'center', marginVertical: 10
+    },
+    statusValue: {
+        padding: 5, borderRadius: 34, borderWidth: 1, borderColor: 'red', marginLeft: 10, paddingHorizontal: 20
+    },
+    branchRow: {
+        alignItems: 'center',
+    },
+    oneside: {
+        width: '50%'
+    },
+    salesContainer:{
+        borderWidth:0.4,borderColor:'grey',marginVertical:10,padding:10,
+        borderRadius:10
+    },
+    radio:{
+        justifyContent:'flex-end'
+    },
+    rw:{
+        backgroundColor:'#7A86A117',padding:10,marginVertical:10
+    },
+    resultLabel:{
+        alignSelf:'center',marginVertical:20
+    }
 })
-export {styles};
+export { styles };
