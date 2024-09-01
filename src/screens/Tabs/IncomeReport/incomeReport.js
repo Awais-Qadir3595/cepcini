@@ -11,7 +11,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import Bold from "../../../Components/core/bold";
 import Radio from "../../../Components/core/radio";
 import { Dimensions } from 'react-native';
- 
+
 import ShowData from "../../../Components/custom/showData";
 import PieChart from 'react-native-pie-chart';
 import { colorsTheme } from "../../../Services/Color";
@@ -25,7 +25,7 @@ const IncomeReport = ({ navigation }) => {
     const [type2, setType2] = useState(false);
     const screenWidth = Dimensions.get('window').width;
 
-     
+
     const widthAndHeight = 250
     const series = [72, 14, 28, 36]
     const sliceColor = [colorsTheme.primary, '#ffb300', 'green', '#ff6c00',]
@@ -113,31 +113,31 @@ const IncomeReport = ({ navigation }) => {
 
             <Bold label="Income Report" size={24} color='black' />
             <View style={styles.salesContainer}>
-                <Label label="Income Details" size={12}/>
-                <Label label="Income data" size={10} color="grey"/>
-                
+                <Label label="Income Details" size={12} />
+                <Label label="Income data" size={10} color="grey" />
+
                 <ScrollView horizontal={true}>
 
 
-                 
-          
-          <PieChart
-            widthAndHeight={widthAndHeight}
-            series={series}
-            sliceColor={sliceColor}
-            coverRadius={0.70}
-            coverFill={'white'}
-          />
+
+
+                    <PieChart
+                        widthAndHeight={widthAndHeight}
+                        series={series}
+                        sliceColor={sliceColor}
+                        coverRadius={0.70}
+                        coverFill={'white'}
+                    />
 
                 </ScrollView>
             </View>
-           
-
-             
 
 
 
-             
+
+
+
+
 
         </ScrollView >
     )
