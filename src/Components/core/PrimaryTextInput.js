@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: mvs(10),
     height: mvs(60),
     // borderBottomWidth: 1,
-    marginHorizontal: mvs(15),
+    // marginHorizontal: mvs(15),
   },
 
   input: {

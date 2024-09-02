@@ -1,3 +1,6 @@
+import SplashLogo from './SplashLogo';
+
+export {SplashLogo};
 export {default as Logo} from './logo.svg';
 // export {default as SplashData} from './splashData.svg';
 export {default as SplashData} from './Illustration.svg';
