@@ -5,6 +5,8 @@ const ROUTES = {
   // addUser:'adduser',
   userlogin: '/login',
 };
+export const KEEP_ALIVE = BASE_URL + '/keepalive-status';
+export const GET_DASHBOARD = BASE_URL + '/dashboard';
 
 const METHOD = {
   POST: 'POST',
