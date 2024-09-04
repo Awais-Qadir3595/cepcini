@@ -10,7 +10,7 @@ export const BaseColor = {
   textHome: '#1C7C3C',
   primary_purple: '#40BDFA',
 
-  textGrey: 'rgba(163, 163, 163, 1)',
+  textGrey: '#7A86A1',
   textGreyDark: 'rgba(111, 111, 111, 1)',
   loginBg: 'rgba(32,133,101,255)',
   statusBarBlue: 'rgba(65, 121, 209, 1)',
