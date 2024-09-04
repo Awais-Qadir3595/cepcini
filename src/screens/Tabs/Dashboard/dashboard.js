@@ -57,7 +57,7 @@ const Dashboard = ({navigation}) => {
 
         setBranches(global?.user?.data?.user?.client?.branches);
       }
-    }
+    } 
   }, []);
 
   const onKeepAlive = item => {

@@ -15,6 +15,8 @@ const Tickets = ({ navigation }) => {
 
     const [date, setDate] = useState(new Date());
     const [show, setShow] = useState(false);
+    const [ticketsData,setTicketsData]=useState(null);
+    
     return (
         <ScrollView style={styles.main}>
             <Row style={styles.rw}>

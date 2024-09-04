@@ -45,6 +45,9 @@ const styles=StyleSheet.create({
     },
     headingdata:{
           alignItems:'center',padding:5,backgroundColor:'rgba(70, 74, 83, 0.07)'
+    },
+    lowerView:{
+        backgroundColor:'red',alignItems:'center',marginVertical:20
     }
 })
 export {styles};

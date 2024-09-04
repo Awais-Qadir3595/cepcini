@@ -4,6 +4,8 @@ const ROUTES = {
   //Auth
   // addUser:'adduser',
   userlogin: '/login',
+   getSpecificProducts:'/products',
+   
 };
 export const KEEP_ALIVE = BASE_URL + '/keepalive-status';
 export const GET_DASHBOARD = BASE_URL + '/dashboard';

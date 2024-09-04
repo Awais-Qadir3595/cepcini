@@ -11,12 +11,13 @@ import {Axios_Post_data} from '../../hooks/axiosCode';
 import {ROUTES} from '../../hooks/ROUTES';
 
 const Login = ({navigation}) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('clientuser@gmail.com');
+  const [password, setPassword] = useState('Azizullah123');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async () => {
     setIsLoading(true);
+
     console.log(email, password);
     // setLoading(true);
     if (email == '') {

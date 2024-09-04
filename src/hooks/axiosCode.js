@@ -11,7 +11,9 @@ const Axios_Fetch=async(Route)=>{
         method: 'get',
         url: `${BASE_URL}${Route}`,
         headers:{
-          "Authorization": "Bearer "+ global?.userData?.token,
+          "Authorization": "Bearer "+ global?.user?.data?.token,
+      
+          
         }
       }).then((response) => {
     

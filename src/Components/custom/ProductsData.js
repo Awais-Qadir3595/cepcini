@@ -20,8 +20,8 @@ export default function ProductsData({id,name,groupCode,price}) {
         <Label label={price} size={12}/>
         </View>
         <Row style={styles.icons}>
-        <EditIcon/>
-        <DeleteIcon/>
+        {/* <EditIcon/>
+        <DeleteIcon/> */}
         </Row>
     </Row>
   )
