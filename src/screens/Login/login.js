@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
-import {View, Text, Touchable, TouchableOpacity} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, TouchableOpacity} from 'react-native';
 import {styles} from './style';
-import {CheckboxEmpty, Countries, Logo} from '../../assets/svgs';
+import {CheckboxEmpty, Logo} from '../../assets/svgs';
 import Bold from '../../Components/core/bold';
 import Label from '../../Components/core/Label';
 import PrimaryTextInput from '../../Components/core/PrimaryTextInput';
@@ -9,11 +9,32 @@ import Row from '../../Components/core/Row';
 import PrimaryButton from '../../Components/core/button';
 import {Axios_Post_data} from '../../hooks/axiosCode';
 import {ROUTES} from '../../hooks/ROUTES';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useToast} from 'react-native-toast-notifications';
+import {Checkbox} from '../../Components';
 
 const Login = ({navigation}) => {
+  const toast = useToast();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [remMe, setRemMe] = useState(false);
+
+  useEffect(() => {
+    getRememberMe();
+  }, []);
+
+  const getRememberMe = async () => {
+    const temp = await AsyncStorage.getItem('@RememberMe');
+    setRemMe(temp === 'true' ? true : false);
+    const userInfo = await AsyncStorage.getItem('@LoginCred');
+    const user = userInfo != null ? JSON.parse(userInfo) : null;
+    if (user !== null) {
+      setEmail(user?.email);
+      setPassword(user?.password);
+    }
+  };
 
   const handleLogin = async () => {
     setIsLoading(true);
@@ -30,12 +51,6 @@ const Login = ({navigation}) => {
       //   Toast.show('Please enter password!');
       //   setLoading(false);
     } else {
-      //   if (!isValidEmail(email)) {
-      //     setEmailValid(false);
-      //   } else {
-      // setEmailValid(true);
-      // console.log('rrrrr', ROUTES.userlogin);
-
       let data = await Axios_Post_data(
         {
           email: email,
@@ -43,12 +58,22 @@ const Login = ({navigation}) => {
         },
         ROUTES.userlogin,
       );
-
-    //   console.log(data);
       if (data.success) {
         setIsLoading(false);
         console.log(data.success);
         global.user = data;
+        const user = JSON.stringify(data);
+        await AsyncStorage.setItem('@UserData', user);
+        await AsyncStorage.setItem('@isLoggedIn', 'true');
+        if (remMe) {
+          const jsonValue = JSON.stringify({
+            email: email,
+            password: password,
+          });
+          await AsyncStorage.setItem('@LoginCred', jsonValue);
+        } else {
+          await AsyncStorage.setItem('@LoginCred', null);
+        }
         navigation.navigate('MyTabs');
         //   setLoading(false);
         //   global.userData = data.data;
@@ -64,6 +89,16 @@ const Login = ({navigation}) => {
         // Toast.show(data.message);
       }
       //   }
+    }
+  };
+
+  const onRememberMe = async () => {
+    if (remMe) {
+      setRemMe(false);
+      await AsyncStorage.setItem('@RememberMe', `false`);
+    } else {
+      setRemMe(true);
+      await AsyncStorage.setItem('@RememberMe', `true`);
     }
   };
 
@@ -91,14 +126,14 @@ const Login = ({navigation}) => {
             <Label label="Forgot Password" size={16} color="#008C87" />
           </Row>
           <PrimaryTextInput
+            secureTextEntry
             style={styles.inputText}
-            placeholder="John.doe@example.com"
+            placeholder="********"
             onChangeText={v => setPassword(v)}
           />
         </View>
         <View style={styles.checkBox}>
-          <CheckboxEmpty />
-          <Label label="Remember me" style={styles.rightText} />
+          <Checkbox check={remMe} label={'Remember me'} func={onRememberMe} />
         </View>
       </View>
       <View>

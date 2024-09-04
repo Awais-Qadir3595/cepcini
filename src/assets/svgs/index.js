@@ -1,6 +1,18 @@
-import SplashLogo from './SplashLogo';
+export {default as SplashLogo} from './SplashLogo';
+export {default as DashboardIcon} from './DashboardIcon';
+export {default as IncomeReportIcon} from './IncomeReportIcon';
+export {default as ProductIcon} from './ProductIcon';
+export {default as TicketIcon} from './TicketIcon';
+export {default as SalesReportIcon} from './SalesReportIcon';
 
-export {SplashLogo};
+// export {
+//   SplashLogo,
+//   DashboardIcon,
+//   IncomeReportIcon,
+//   ProductIcon,
+//   TicketIcon,
+//   SalesReportIcon,
+// };
 export {default as Logo} from './logo.svg';
 // export {default as SplashData} from './splashData.svg';
 export {default as SplashData} from './Illustration.svg';

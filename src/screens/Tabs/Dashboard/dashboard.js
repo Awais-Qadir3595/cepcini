@@ -20,7 +20,7 @@ import {Dimensions} from 'react-native';
 // } from 'react-native-chart-kit';
 import ShowData from '../../../Components/custom/showData';
 import moment from 'moment';
-import {Dropdown} from '../../../Components';
+import {Drawer, Dropdown} from '../../../Components';
 import {GET_DASHBOARD, KEEP_ALIVE} from '../../../hooks/ROUTES';
 import axios from 'axios';
 import DataTable, {COL_TYPES} from 'react-native-datatable-component';
@@ -45,6 +45,7 @@ const Dashboard = ({navigation}) => {
   const [dashData, setDashData] = useState(null);
   const [graphData, setGraphData] = useState(null);
   const [yAxisLabes, setYAxisLabels] = useState(null);
+  const [isDrawerVisible, setDrawerVisible] = useState(false);
 
   useEffect(() => {
     if (global?.user) {
@@ -131,18 +132,18 @@ const Dashboard = ({navigation}) => {
               const amounts = resp?.data?.data?.sales_on_daily_bases.map(item =>
                 parseFloat(item.total_amount),
               );
-            //   const maxAmount = Math.max(...amounts);
-            //   const minAmount = 0;
-            //   const noOfSections = 6;
-            //   const stepValue = (maxAmount - minAmount) / noOfSections;
-            //   const yAxisLabelTexts = [];
-            //   for (let i = 0; (i = noOfSections); i++) {
-            //     const labelValue = minAmount + stepValue * i;
-            //     yAxisLabelTexts.push(
-            //       labelValue === 0 ? '0' : `${(labelValue / 1000).toFixed(1)}k`,
-            //     );
-            //   }
-            //   setYAxisLabels(yAxisLabelTexts);
+              //   const maxAmount = Math.max(...amounts);
+              //   const minAmount = 0;
+              //   const noOfSections = 6;
+              //   const stepValue = (maxAmount - minAmount) / noOfSections;
+              //   const yAxisLabelTexts = [];
+              //   for (let i = 0; (i = noOfSections); i++) {
+              //     const labelValue = minAmount + stepValue * i;
+              //     yAxisLabelTexts.push(
+              //       labelValue === 0 ? '0' : `${(labelValue / 1000).toFixed(1)}k`,
+              //     );
+              //   }
+              //   setYAxisLabels(yAxisLabelTexts);
               console.log('--------');
 
               setGraphData(temp);
@@ -182,147 +183,164 @@ const Dashboard = ({navigation}) => {
     }
   };
 
-  return (
-    <ScrollView style={styles.main}>
-      <Header name={global?.user?.data?.user?.name} />
-      <Row style={styles.statusRow}>
-        <Row style={styles.statusRow}>
-          <Label label="Status" size={14} color="grey" />
-          {branchStatus?.keep_alive ? (
-            <View
-              style={[
-                styles.statusValue,
-                {
-                  borderColor: 'green',
-                },
-              ]}>
-              <Label label="Online" size={9} color="green" />
-            </View>
-          ) : (
-            <View
-              style={[
-                styles.statusValue,
-                {
-                  borderColor: 'red',
-                },
-              ]}>
-              <Label label="Offline" size={9} color="red" />
-            </View>
-          )}
-        </Row>
-        <Countries />
-      </Row>
+  const toggleDrawer = () => {
+    setDrawerVisible(!isDrawerVisible);
+  };
 
-      <Row style={styles.branchRow}>
-        <View style={styles.oneside}>
-          <Label label="Branch" color="grey" />
-        </View>
-        <View style={styles.oneside}>
-          <Label label="Date" color="grey" />
-        </View>
-      </Row>
-      <Row style={styles.statusRow}>
-        <View style={styles.oneside}>
-          {/* <RNPickerSelect
+  return (
+    <>
+      <Drawer isDrawerVisible={isDrawerVisible} toggleDrawer={toggleDrawer} />
+      <ScrollView style={styles.main}>
+        <Header
+          name={global?.user?.data?.user?.name}
+          onDrawerPress={toggleDrawer}
+        />
+        <Row style={styles.statusRow}>
+          <Row style={styles.statusRow}>
+            <Label label="Status" size={14} color="grey" />
+            {branchStatus?.keep_alive ? (
+              <View
+                style={[
+                  styles.statusValue,
+                  {
+                    borderColor: 'green',
+                  },
+                ]}>
+                <Label label="Online" size={9} color="green" />
+              </View>
+            ) : (
+              <View
+                style={[
+                  styles.statusValue,
+                  {
+                    borderColor: 'red',
+                  },
+                ]}>
+                <Label label="Offline" size={9} color="red" />
+              </View>
+            )}
+          </Row>
+          <Countries />
+        </Row>
+
+        <Row style={styles.branchRow}>
+          <View style={styles.oneside}>
+            <Label label="Branch" color="grey" />
+          </View>
+          <View style={styles.oneside}>
+            <Label label="Date" color="grey" />
+          </View>
+        </Row>
+        <Row style={styles.statusRow}>
+          <View style={styles.oneside}>
+            {/* <RNPickerSelect
             onValueChange={value => setBranch(value)}
             items={branches}
             value={branch}
             activeItemStyle={{color:'#000'}}
           /> */}
-          <Dropdown
-            selected={branch}
-            schema={{
-              label: 'name',
-              value: 'id',
-            }}
-            data={branches}
-            setSelected={item => onKeepAlive(item)}
-          />
-        </View>
-
-        <View style={styles.oneside}>
-          <Row style={{alignItems: 'center'}}>
-            <TouchableOpacity onPress={() => setShow(true)}>
-              <Label label={moment(startDate).format('DD-MM-YYYY')} size={12} />
-            </TouchableOpacity>
-            <Label label={`⇁`} size={20} style={{paddingBottom: 8}} />
-            <TouchableOpacity onPress={() => setShow1(true)}>
-              <Label label={moment(endDate).format('DD-MM-YYYY')} size={12} />
-            </TouchableOpacity>
-            <Calender />
-          </Row>
-        </View>
-      </Row>
-
-      {show && (
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={startDate}
-          mode={mode}
-          is24Hour={true}
-          display="shortdate"
-          onChange={onChange}
-        />
-      )}
-      {show1 && (
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={endDate}
-          mode={mode}
-          is24Hour={true}
-          display="shortdate"
-          onChange={onChange1}
-        />
-      )}
-
-      <Bold label="Dashboard" size={24} color="black" />
-
-      <View style={styles.salesContainer}>
-        <Label label="Sales" />
-        <Label label="Sales view" color={colors.textGrey} />
-        <Row style={styles.radio}>
-          <Radio
-            selected={type1}
-            label="type 1"
-            onClick={() => onTypeClick(1)}
-          />
-          <Radio
-            selected={type2}
-            label="type 2"
-            onClick={() => onTypeClick(2)}
-          />
-        </Row>
-        <ScrollView horizontal={true}>
-          {graphData && (
-            <BarChart
-              data={graphData}
-              //   barWidth={16}
-              initialSpacing={10}
-              spacing={20}
-              barBorderRadius={4}
-              yAxisThickness={0}
-              xAxisType={ruleTypes.DASHED}
-              xAxisColor={'lightgray'}
-              yAxisTextStyle={{color: 'lightgray'}}
-              stepValue={4000}
-              maxValue={24000}
-              noOfSections={6}
-              yAxisLabelTexts={['0', '4k', '8k', '12k', '16k', '20k', '24k']}
-              xAxisLabelTexts={['aug 2023', 'nov 2023', 'feb 2024', 'may 2024']}
-              labelWidth={8}
-              xAxisLabelTextStyle={{color: '#000', fontSize: 5}}
-              //   showLine
-              //   lineConfig={{
-              //     color: '#F29C6E',
-              //     thickness: 3,
-              //     curved: true,
-              //     hideDataPoints: true,
-              //     shiftY: 20,
-              //     initialSpacing: -30,
-              //   }}
+            <Dropdown
+              selected={branch}
+              schema={{
+                label: 'name',
+                value: 'id',
+              }}
+              data={branches}
+              setSelected={item => onKeepAlive(item)}
             />
-          )}
-          {/* <BarChart
+          </View>
+
+          <View style={styles.oneside}>
+            <Row style={{alignItems: 'center'}}>
+              <TouchableOpacity onPress={() => setShow(true)}>
+                <Label
+                  label={moment(startDate).format('DD-MM-YYYY')}
+                  size={12}
+                />
+              </TouchableOpacity>
+              <Label label={`⇁`} size={20} style={{paddingBottom: 8}} />
+              <TouchableOpacity onPress={() => setShow1(true)}>
+                <Label label={moment(endDate).format('DD-MM-YYYY')} size={12} />
+              </TouchableOpacity>
+              <Calender />
+            </Row>
+          </View>
+        </Row>
+
+        {show && (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={startDate}
+            mode={mode}
+            is24Hour={true}
+            display="shortdate"
+            onChange={onChange}
+          />
+        )}
+        {show1 && (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={endDate}
+            mode={mode}
+            is24Hour={true}
+            display="shortdate"
+            onChange={onChange1}
+          />
+        )}
+
+        <Bold label="Dashboard" size={24} color="black" />
+
+        <View style={styles.salesContainer}>
+          <Label label="Sales" />
+          <Label label="Sales view" color={colors.textGrey} />
+          <Row style={styles.radio}>
+            <Radio
+              selected={type1}
+              label="type 1"
+              onClick={() => onTypeClick(1)}
+            />
+            <Radio
+              selected={type2}
+              label="type 2"
+              onClick={() => onTypeClick(2)}
+            />
+          </Row>
+          <ScrollView horizontal={true}>
+            {graphData && (
+              <BarChart
+                data={graphData}
+                //   barWidth={16}
+                initialSpacing={10}
+                spacing={20}
+                barBorderRadius={4}
+                yAxisThickness={0}
+                xAxisType={ruleTypes.DASHED}
+                xAxisColor={'lightgray'}
+                yAxisTextStyle={{color: 'lightgray'}}
+                stepValue={4000}
+                maxValue={24000}
+                noOfSections={6}
+                yAxisLabelTexts={['0', '4k', '8k', '12k', '16k', '20k', '24k']}
+                xAxisLabelTexts={[
+                  'aug 2023',
+                  'nov 2023',
+                  'feb 2024',
+                  'may 2024',
+                ]}
+                labelWidth={8}
+                xAxisLabelTextStyle={{color: '#000', fontSize: 5}}
+                //   showLine
+                //   lineConfig={{
+                //     color: '#F29C6E',
+                //     thickness: 3,
+                //     curved: true,
+                //     hideDataPoints: true,
+                //     shiftY: 20,
+                //     initialSpacing: -30,
+                //   }}
+              />
+            )}
+            {/* <BarChart
             data={{
               labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
               datasets: [
@@ -384,74 +402,75 @@ const Dashboard = ({navigation}) => {
             //     });
             //   }}
           /> */}
-        </ScrollView>
-      </View>
+          </ScrollView>
+        </View>
 
-      <Row>
-        <ShowData
-          icon={'Dailysales'}
-          label={'Daily Sales'}
-          count={dashData?.today_sale_amount ?? 0}
-        />
-        <ShowData
-          icon={'AvgAmountPerTicket'}
-          label={'Avg Amount Per Ticket'}
-          count={dashData?.avg_amount_per_ticket ?? 0}
-        />
-      </Row>
-
-      <Row>
-        <ShowData
-          icon={'OpenTickets'}
-          label={'Open Tickets'}
-          count={dashData?.total_num_of_open_tickets ?? 0}
-        />
-        <ShowData
-          icon={'TotalTickets'}
-          label={'Total Ticket Amount'}
-          count={dashData?.sum_of_open_tickets ?? 0}
-        />
-      </Row>
-
-      <Row>
-        <ShowData
-          icon={'OpenticketsAmount'}
-          label={'Open Tickets Amount'}
-          count={dashData?.sum_all_tickets_amount ?? 0}
-        />
-        <ShowData
-          icon={'TotalTicketsBlack'}
-          label={'Total Tickets'}
-          count={dashData?.total_num_of_tickets ?? 0}
-        />
-      </Row>
-
-      <View style={{...styles.salesContainer, marginBottom: 100}}>
-        <Label label="Top Users" size={14} />
-        <Row style={styles.rw}>
-          <Label label="User" size={12} />
-          <Label label="Total Amount" size={12} />
+        <Row>
+          <ShowData
+            icon={'Dailysales'}
+            label={'Daily Sales'}
+            count={dashData?.today_sale_amount ?? 0}
+          />
+          <ShowData
+            icon={'AvgAmountPerTicket'}
+            label={'Avg Amount Per Ticket'}
+            count={dashData?.avg_amount_per_ticket ?? 0}
+          />
         </Row>
-        {/* <Label
+
+        <Row>
+          <ShowData
+            icon={'OpenTickets'}
+            label={'Open Tickets'}
+            count={dashData?.total_num_of_open_tickets ?? 0}
+          />
+          <ShowData
+            icon={'TotalTickets'}
+            label={'Total Ticket Amount'}
+            count={dashData?.sum_of_open_tickets ?? 0}
+          />
+        </Row>
+
+        <Row>
+          <ShowData
+            icon={'OpenticketsAmount'}
+            label={'Open Tickets Amount'}
+            count={dashData?.sum_all_tickets_amount ?? 0}
+          />
+          <ShowData
+            icon={'TotalTicketsBlack'}
+            label={'Total Tickets'}
+            count={dashData?.total_num_of_tickets ?? 0}
+          />
+        </Row>
+
+        <View style={{...styles.salesContainer, marginBottom: 100}}>
+          <Label label="Top Users" size={14} />
+          <Row style={styles.rw}>
+            <Label label="User" size={12} />
+            <Label label="Total Amount" size={12} />
+          </Row>
+          {/* <Label
           label=" Showing 0 to 0 of 00 entries"
           style={styles.resultLabel}
           size={11}
         /> */}
-        <View style={{width: '100%', backgroundColor: 'red', margin: 1}}>
-          <DataTable
-            data={dashData?.user_based_sale ?? []} // list of objects
-            colNames={['user', 'total_amount']} //List of Strings
-            colSettings={[
-              {name: 'user', type: COL_TYPES.STRING, width: '50%'},
-              {name: 'total_amount', type: COL_TYPES.INT, width: '50%'},
-            ]}
-            noOfPages={dashData?.user_based_sale.length / 5} //number
-            backgroundColor={'#fff'}
-            headerLabelStyle={{color: 'grey', fontSize: 12}}
-          />
+          <View style={{width: '100%', backgroundColor: 'red', margin: 1}}>
+            <DataTable
+              data={dashData?.user_based_sale ?? []} // list of objects
+              colNames={['user', 'total_amount']} //List of Strings
+              colSettings={[
+                {name: 'user', type: COL_TYPES.STRING, width: '50%'},
+                {name: 'total_amount', type: COL_TYPES.INT, width: '50%'},
+              ]}
+              noOfPages={dashData?.user_based_sale.length / 5} //number
+              backgroundColor={'#fff'}
+              headerLabelStyle={{color: 'grey', fontSize: 12}}
+            />
+          </View>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </>
   );
 };
 export default Dashboard;

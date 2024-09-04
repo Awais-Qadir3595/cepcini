@@ -1,11 +1,11 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import Row from '../core/Row';
 import {ImagePerson, NotificationIcon, OptionIcon} from '../../assets/svgs';
 import Label from '../core/Label';
 import Bold from '../core/bold';
 
-export default function Header({name = ''}) {
+export default function Header({name = '', onDrawerPress}) {
   return (
     <Row style={styles.main}>
       <Row style={styles.rw}>
@@ -18,7 +18,9 @@ export default function Header({name = ''}) {
 
       <Row style={styles.rw}>
         <NotificationIcon />
-        <OptionIcon />
+        <TouchableOpacity onPress={onDrawerPress}>
+          <OptionIcon />
+        </TouchableOpacity>
       </Row>
     </Row>
   );
