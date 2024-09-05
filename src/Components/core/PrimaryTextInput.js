@@ -1,5 +1,5 @@
 import Row from './Row';
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   TouchableOpacity,
   StyleSheet,
@@ -8,10 +8,11 @@ import {
   TextInput,
   LogBox,
 } from 'react-native';
-import { mvs } from '../../Services/metrices';
+import {mvs} from '../../Services/metrices';
 import * as SVG from '../../assets/svgs';
-import { colorsTheme } from '../../Services/Color';
- 
+import {colorsTheme} from '../../Services/Color';
+import {Icon, Icons} from '..';
+import {useTheme} from '../../config/theme';
 
 const PrimaryTextInput = ({
   leftIcon = '',
@@ -20,51 +21,50 @@ const PrimaryTextInput = ({
   placeholder = '',
   style,
   inputValue,
-   onChangeText,
-   type,
-   secureTextEntry,
-   textAlign,
-   onLeftPress,
-   onBlur,
-   placeholderTextColor='gray',
-   onFocus,
-   existThreat,
-   onEyeClick,
-   eyeClick
-   
+  onChangeText,
+  type,
+  secureTextEntry,
+  textAlign,
+  onLeftPress,
+  onBlur,
+  placeholderTextColor = 'gray',
+  onFocus,
+  existThreat,
+  onEyeClick,
 }) => {
-  
+  const colors = useTheme();
   const LeftIcon = SVG[leftIcon];
   const RightIcon = SVG[rightIcon];
- 
 
   return (
-    <Row style={{ ...styles.main, ...style }}>
-      
+    <Row style={{...styles.main, ...style}}>
       <TouchableOpacity onPress={onLeftPress}>
-      {LeftIcon ? <LeftIcon /> : null}
+        {LeftIcon ? <LeftIcon /> : null}
       </TouchableOpacity>
 
-      
       <TextInput
         style={styles.input}
-       value={inputValue}
+        value={inputValue}
         placeholder={placeholder}
         placeholderTextColor={placeholderTextColor}
-        onChangeText={onChangeText} 
+        onChangeText={onChangeText}
         keyboardType={type}
         secureTextEntry={secureTextEntry}
         textAlign={textAlign}
         onBlur={onBlur}
         onFocus={onFocus}
-        
+      />
 
-        />
+      {onEyeClick && (
+        <TouchableOpacity onPress={onEyeClick}>
+          <Icon
+            name={secureTextEntry ? Icons.EYE_ICON_OPEN : Icons.EYE_ICON_CROSS}
+            size={20}
+            color={colors.primary}
+          />
+        </TouchableOpacity>
+      )}
 
-<TouchableOpacity onPress={onEyeClick}>
-{RightIcon ? <RightIcon fill='darkblue'/> : null}
-</TouchableOpacity>
-     
       {rightPng ? (
         <View
           style={{
@@ -74,12 +74,8 @@ const PrimaryTextInput = ({
             borderRadius: 20,
             justifyContent: 'center',
             alignItems: 'center',
-            
           }}>
-          <Image
-            source={rightPng}
-            style={{ height: 30, width: 30, }}
-          />
+          <Image source={rightPng} style={{height: 30, width: 30}} />
         </View>
       ) : null}
       {/* <View style={{backgroundColor: colors.primary, height: 30, width: 30}}>
@@ -104,8 +100,6 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     paddingRight: mvs(10),
-    color: 'black', 
-    
+    color: 'black',
   },
-
 });

@@ -45,7 +45,6 @@ const Dashboard = ({navigation}) => {
   const [dashData, setDashData] = useState(null);
   const [graphData, setGraphData] = useState(null);
   const [yAxisLabes, setYAxisLabels] = useState(null);
-  const [isDrawerVisible, setDrawerVisible] = useState(false);
 
   useEffect(() => {
     if (global?.user) {
@@ -58,7 +57,7 @@ const Dashboard = ({navigation}) => {
 
         setBranches(global?.user?.data?.user?.client?.branches);
       }
-    } 
+    }
   }, []);
 
   const onKeepAlive = item => {
@@ -183,18 +182,10 @@ const Dashboard = ({navigation}) => {
     }
   };
 
-  const toggleDrawer = () => {
-    setDrawerVisible(!isDrawerVisible);
-  };
-
   return (
     <>
-      <Drawer isDrawerVisible={isDrawerVisible} toggleDrawer={toggleDrawer} />
       <ScrollView style={styles.main}>
-        <Header
-          name={global?.user?.data?.user?.name}
-          onDrawerPress={toggleDrawer}
-        />
+        <Header name={global?.user?.data?.user?.name} />
         <Row style={styles.statusRow}>
           <Row style={styles.statusRow}>
             <Label label="Status" size={14} color="grey" />

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {View, TouchableOpacity} from 'react-native';
 import {styles} from './style';
-import {CheckboxEmpty, Logo} from '../../assets/svgs';
+import {CheckboxEmpty, Countries, Logo} from '../../assets/svgs';
 import Bold from '../../Components/core/bold';
 import Label from '../../Components/core/Label';
 import PrimaryTextInput from '../../Components/core/PrimaryTextInput';
@@ -12,25 +12,29 @@ import {ROUTES} from '../../hooks/ROUTES';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useToast} from 'react-native-toast-notifications';
 import {Checkbox} from '../../Components';
+import {useIsFocused} from '@react-navigation/native';
 
 const Login = ({navigation}) => {
   const toast = useToast();
+  const isFocused = useIsFocused();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [remMe, setRemMe] = useState(false);
+  const [eyeClick, setEyeClick] = useState(true);
 
   useEffect(() => {
     getRememberMe();
-  }, []);
+  }, [isFocused]);
 
   const getRememberMe = async () => {
     const temp = await AsyncStorage.getItem('@RememberMe');
     setRemMe(temp === 'true' ? true : false);
     const userInfo = await AsyncStorage.getItem('@LoginCred');
     const user = userInfo != null ? JSON.parse(userInfo) : null;
-    if (user !== null) {
+
+    if (user) {
       setEmail(user?.email);
       setPassword(user?.password);
     }
@@ -75,12 +79,7 @@ const Login = ({navigation}) => {
         } else {
           await AsyncStorage.setItem('@LoginCred', null);
         }
-        navigation.navigate('MyTabs');
-        //   setLoading(false);
-        //   global.userData = data.data;
-        //   const jsonValue = JSON.stringify(data?.data);
-        //   await AsyncStorage.setItem('userData', jsonValue);
-        //   navigation.replace(COMMON.MY_TABS);
+        navigation.replace('MyTabs');
       } else {
         console.log('mmmm');
 
@@ -119,6 +118,7 @@ const Login = ({navigation}) => {
             style={styles.inputText}
             placeholder="John.doe@example.com"
             onChangeText={v => setEmail(v)}
+            inputValue={email}
           />
         </View>
         <View style={styles.field}>
@@ -127,10 +127,12 @@ const Login = ({navigation}) => {
             <Label label="Forgot Password" size={16} color="#008C87" />
           </Row>
           <PrimaryTextInput
-            secureTextEntry
+            secureTextEntry={eyeClick}
             style={styles.inputText}
             placeholder="********"
             onChangeText={v => setPassword(v)}
+            inputValue={password}
+            onEyeClick={() => setEyeClick(!eyeClick)}
           />
         </View>
         <View style={styles.checkBox}>
