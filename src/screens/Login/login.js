@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {View, TouchableOpacity} from 'react-native';
 import {styles} from './style';
-import {CheckboxEmpty, Logo} from '../../assets/svgs';
+import {CheckboxEmpty, Countries, Logo} from '../../assets/svgs';
 import Bold from '../../Components/core/bold';
 import Label from '../../Components/core/Label';
 import PrimaryTextInput from '../../Components/core/PrimaryTextInput';

@@ -37,3 +37,5 @@ export {default as BackIcon} from './backIcon.svg';
 export {default as SearchIcon} from './searchIcon.svg';
 export {default as DeleteIcon} from './deleteIcon.svg';
 export {default as EditIcon} from './editIcon.svg';
+export {default as Next} from './next.svg';
+export {default as Previous} from './previous.svg';

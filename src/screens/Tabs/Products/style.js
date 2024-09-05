@@ -14,7 +14,7 @@ const styles=StyleSheet.create({
         alignItems: 'center', marginVertical: 10
     },
     statusValue: {
-        padding: 5, borderRadius: 34, borderWidth: 1, borderColor: 'red', marginLeft: 10, paddingHorizontal: 20
+        padding: 3, borderRadius: 34, borderWidth: 1, borderColor: 'red', marginLeft: 10, paddingHorizontal: 10
     },
     branchRow: {
         alignItems: 'center',
@@ -47,7 +47,13 @@ const styles=StyleSheet.create({
           alignItems:'center',padding:5,backgroundColor:'rgba(70, 74, 83, 0.07)'
     },
     lowerView:{
-        backgroundColor:'red',alignItems:'center',marginVertical:20
-    }
+         alignItems:'center',marginVertical:20,borderWidth:0.4,padding:10,borderRadius:10
+    },
+    dropDown:{
+        width:'35%',height:30,justifyContent:'center',alignSelf:'center'
+  },
+  noDate:{
+    alignSelf:'center'
+}
 })
 export {styles};

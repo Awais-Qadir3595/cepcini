@@ -5,6 +5,7 @@ const ROUTES = {
   // addUser:'adduser',
   userlogin: '/login',
    getSpecificProducts:'/products',
+   ticketsStatus:'/tickets-status'
    
 };
 export const KEEP_ALIVE = BASE_URL + '/keepalive-status';
