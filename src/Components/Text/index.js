@@ -91,7 +91,7 @@ export default function Index(props) {
     heavy && {fontWeight: FontWeight.heavy},
     black && {fontWeight: FontWeight.black},
     // default color
-    {color: BaseColor.primary},
+    {color: BaseColor.textGrey},
     //custom for color
     whiteColor && {color: BaseColor.whiteColor},
     blackColor && {color: BaseColor.textBlack},
