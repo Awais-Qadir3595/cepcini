@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import { colorsTheme } from "../../../Services/Color";
 const styles=StyleSheet.create({
 
     main:{
@@ -36,6 +37,24 @@ const styles=StyleSheet.create({
     },
     rowclose:{
         justifyContent:'flex-start',alignItems:'center'
+    },
+    searchBox:{
+        borderWidth:0.5,borderColor:'grey',borderRadius:10,height:40,
+    },
+    dropDown:{
+          width:'35%',height:30,justifyContent:'center',alignSelf:'center'
+    },
+    v1:{
+        width:'15%',alignItems:'center',justifyContent:'center' 
+    },
+    headingdata:{
+          alignItems:'center',padding:5,backgroundColor:'rgba(70, 74, 83, 0.07)'
+    },
+    lowerView:{
+         alignItems:'center',marginVertical:20,borderWidth:0.4,padding:10,borderRadius:10
+    },
+    noDate:{
+        alignSelf:'center'
     }
 })
 export {styles};

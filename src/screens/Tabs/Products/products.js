@@ -4,7 +4,7 @@ import { View, Text, TouchableOpacity, ImageBackground, Image, ScrollView, FlatL
 import { styles } from "./style";
 import Header from "../../../Components/custom/Header";
 import Row from "../../../Components/core/Row";
-import { BackIcon } from "../../../assets/svgs";
+import { BackIcon, Next, Previous } from "../../../assets/svgs";
 import Label from "../../../Components/core/Label";
 import RNPickerSelect from 'react-native-picker-select';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -21,9 +21,21 @@ const Products = ({ navigation }) => {
     const [show, setShow] = useState(false);
     const [productsList, setProductList] = useState();
     const [paginate, setPaginate] = useState(1);
-    const [pageSize, setPageSize] = useState(10);
+
     const [orderBy, setOrderBy] = useState('desc');
     const [sortBy, setSortBy] = useState('id');
+    const [pagination, setPagination] = useState(null);
+
+
+     
+    const pagesizeList = [
+        { label: '10', value: 10 },
+        { label: '20', value: 20 },
+        { label: '50', value: 50 },
+    ];
+
+    const [pageSize, setPageSize] = useState(pagesizeList[0].value);
+
     useEffect(() => {
         if (global?.user) {
             if (global?.user?.data?.user?.client?.branches) {
@@ -36,26 +48,33 @@ const Products = ({ navigation }) => {
         value: branch.id,  // or branch.key, depending on your requirement
     }));
 
+
+
+
+
     const getSpecificProduct = async (id) => {
+
 
 
 
         let data = await Axios_Fetch(
 
-            //    `${ROUTES.getSpecificProducts}/${id}`,
             `${ROUTES.getSpecificProducts}/${id}?paginate=${paginate}&page_size=${pageSize}&order_by=${orderBy}&sort_by=${sortBy}`
         );
-        console.log('datttt');
+
         setProductList(data?.data?.list);
-        console.log(data?.data?.list);
+
+        setPagination(data?.data?.pagination)
 
     }
 
     const renderData = ({ item }) => {
 
 
+
+
         return (
-            <ProductsData name={item?.name} id={item.id} groupCode={item.groupCode}
+            <ProductsData name={item?.name} id={item.id} groupCode={item.groupCode} price={item?.portions[0]?.price}
             />
         )
     }
@@ -63,7 +82,7 @@ const Products = ({ navigation }) => {
         <ScrollView style={styles.main}>
             <Row style={styles.rw}>
                 <BackIcon />
-                <Label label="Products Detail" size={20} style={styles.heading} />
+                <Label label="Products List" size={20} style={styles.heading} />
 
             </Row>
             <Row style={styles.statusRow}>
@@ -80,27 +99,73 @@ const Products = ({ navigation }) => {
                 <View style={styles.oneside}>
                     <Label label="Branch" color="grey" />
                 </View>
-                <View style={styles.oneside}>
-                    <Label label="Date" color="grey" />
-                </View>
+
             </Row >
             <Row style={styles.statusRow}>
                 <View style={styles.oneside}>
                     <RNPickerSelect
                         onValueChange={(value) => getSpecificProduct(value)}
                         items={transformedBranches}
-
                     />
                 </View>
-                <View style={styles.oneside}>
-                    <TouchableOpacity onPress={() => setShow(true)}>
-                        <Row style={{ alignItems: 'center' }}>
-                            <Label label={date.toString()} size={12} />
-                            <Calender />
-                        </Row>
 
-                    </TouchableOpacity>
+                <View style={{ ...styles.dropDown, width: '25%' }}>
+                    <Label label="Rows per page" size={12} />
                 </View>
+
+                <View style={{ ...styles.dropDown, width: '25%' }}>
+                    <RNPickerSelect
+                        useNativeAndroidPickerStyle={false}
+                        onValueChange={(value) => setPageSize(value)}
+
+                        value={pageSize}
+                        items={pagesizeList}
+
+                        style={{
+
+                            inputAndroid: {
+                                fontSize: 13,
+                                paddingVertical: 8,
+                                paddingHorizontal: 16,
+                                borderWidth: 0.4,
+                                borderRadius: 8,
+                                color: 'black',
+                                paddingRight: 30, // for dropdown icon
+                                backgroundColor: '#f0f0f0',  // Example background color
+                            },
+                            iconContainer: {
+                                top: 10,
+                                right: 12,
+                                alignSelf: 'center',
+                            },
+                            placeholder: {
+                                color: 'white',
+                                fontSize: 18,
+                            },
+                        }}
+
+                        Icon={() => {
+                            return (
+                                <View
+                                    style={{
+                                        backgroundColor: 'transparent',
+                                        borderTopWidth: 10,
+                                        borderTopColor: 'gray',
+                                        borderRightWidth: 10,
+                                        borderRightColor: 'transparent',
+                                        borderLeftWidth: 10,
+                                        borderLeftColor: 'transparent',
+                                        width: 0,
+                                        height: 0,
+                                    }}
+                                />
+                            );
+                        }}
+                    />
+                </View>
+
+
+
 
             </Row>
 
@@ -148,40 +213,32 @@ const Products = ({ navigation }) => {
             {
                 productsList != null ?
                     <FlatList
-                        style={{ marginBottom: 100 }}
+
                         data={productsList}
                         renderItem={renderData}
                         keyExtractor={(item, index) => index.toString()}
                     />
                     :
-                    <Label label="No data to show" />
+                    <Label label="No data to show" size={12}
+                        style={styles.noDate} />
             }
-
 
             {
                 productsList != null ?
                     <Row style={styles.lowerView}>
-                        <Label label="Row per Page" />
-                        <RNPickerSelect
-      onValueChange={(value) => console.log(value)}
-      items={[
-        { label: 'Football', value: 'football' },
-        { label: 'Baseball', value: 'baseball' },
-        { label: 'Hockey', value: 'hockey' },
-      ]}
-    />
+                        <Label label={'showing' + pagination?.from + ' to ' + pagination?.to + ' of ' + pagination?.total}
+                            size={12} />
+
+
+                        <Previous />
+                        <Next />
+
+
                     </Row>
                     : null
             }
 
 
-            {/* // keyExtractor={item => item.id} */}
-
-            {/* <ProductsData id={1} name={} groupCode={'breakfast'} price={456} />
-            <ProductsData id={1} name='Toasted Bagel Jam' groupCode={'breakfast'} price={456} />
-            <ProductsData id={1} name='Toasted Bagel Jam' groupCode={'breakfast'} price={456} />
-            <ProductsData id={1} name='Toasted Bagel Jam' groupCode={'breakfast'} price={456} />
-            <ProductsData id={1} name='Toasted Bagel Jam' groupCode={'breakfast'} price={456} /> */}
 
 
 

@@ -10,14 +10,6 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import Bold from '../../../Components/core/bold';
 import Radio from '../../../Components/core/radio';
 import {Dimensions} from 'react-native';
-// import {
-//   LineChart,
-//   BarChart,
-//   PieChart,
-//   ProgressChart,
-//   ContributionGraph,
-//   StackedBarChart,
-// } from 'react-native-chart-kit';
 import ShowData from '../../../Components/custom/showData';
 import moment from 'moment';
 import {Drawer, Dropdown} from '../../../Components';
