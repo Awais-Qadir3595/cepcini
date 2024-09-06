@@ -1,22 +1,25 @@
 import React, {useEffect, useState} from 'react';
 import {View, TouchableOpacity} from 'react-native';
 import {styles} from './style';
-import {CheckboxEmpty, Countries, Logo} from '../../assets/svgs';
+import {Countries, Logo} from '../../assets/svgs';
 import Bold from '../../Components/core/bold';
 import Label from '../../Components/core/Label';
 import PrimaryTextInput from '../../Components/core/PrimaryTextInput';
 import Row from '../../Components/core/Row';
 import PrimaryButton from '../../Components/core/button';
-import {Axios_Post_data} from '../../hooks/axiosCode';
-import {ROUTES} from '../../hooks/ROUTES';
+import {LOGIN} from '../../hooks/ROUTES';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useToast} from 'react-native-toast-notifications';
-import {Checkbox} from '../../Components';
+import {Checkbox, Text} from '../../Components';
 import {useIsFocused} from '@react-navigation/native';
+import {useIsConnected} from 'react-native-offline';
+import {isValidEmail} from '../../utils/validation';
+import axios from 'axios';
 
 const Login = ({navigation}) => {
   const toast = useToast();
   const isFocused = useIsFocused();
+  let isConnected = useIsConnected();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -41,54 +44,67 @@ const Login = ({navigation}) => {
   };
 
   const handleLogin = async () => {
-    setIsLoading(true);
+    if (isConnected) {
+      setIsLoading(true);
 
-    console.log(email, password);
-    // setLoading(true);
-    if (email == '') {
-      console.log('email empty');
-      setIsLoading(false);
-      //   Toast.show('Please enter email!');
-      //   setLoading(false);
-    } else if (password == '') {
-      console.log('email empty');
-      setIsLoading(false);
-      //   Toast.show('Please enter password!');
-      //   setLoading(false);
-    } else {
-      let data = await Axios_Post_data(
-        {
-          email: email,
-          password: password,
-        },
-        ROUTES.userlogin,
-      );
-      if (data.success) {
+      if (email == '') {
         setIsLoading(false);
-        console.log(data.success);
-        global.user = data;
-        const user = JSON.stringify(data);
-        await AsyncStorage.setItem('@UserData', user);
-        await AsyncStorage.setItem('@isLoggedIn', 'true');
-        if (remMe) {
-          const jsonValue = JSON.stringify({
+        toast.hideAll();
+        toast.show('Please enter email!');
+      } else if (password == '') {
+        setIsLoading(false);
+        toast.hideAll();
+        toast.show('Please enter password!');
+      } else {
+        const url = LOGIN;
+        axios({
+          method: 'POST',
+          url: url,
+          data: {
             email: email,
             password: password,
+          },
+          headers: {
+            Authorization: 'Bearer ' + global?.userData?.token,
+          },
+        })
+          .then(async resp => {
+            const data = resp?.data;
+            if (data.success) {
+              setIsLoading(false);
+              // console.log(data.success);
+              global.user = data;
+              const user = JSON.stringify(data);
+              await AsyncStorage.setItem('@UserData', user);
+              await AsyncStorage.setItem('@isLoggedIn', 'true');
+              if (remMe) {
+                const jsonValue = JSON.stringify({
+                  email: email,
+                  password: password,
+                });
+                await AsyncStorage.setItem('@LoginCred', jsonValue);
+              } else {
+                await AsyncStorage.setItem('@LoginCred', null);
+              }
+              toast.hideAll();
+              toast.show('Login Successful');
+              navigation.replace('MyTabs');
+            } else {
+              toast.hideAll();
+              toast.show('Something went wrong');
+              setIsLoading(false);
+            }
+          })
+          .catch(e => {
+            console.log(e);
+            toast.hideAll();
+            toast.show('Something went wrong');
+            setIsLoading(false);
           });
-          await AsyncStorage.setItem('@LoginCred', jsonValue);
-        } else {
-          await AsyncStorage.setItem('@LoginCred', null);
-        }
-        navigation.replace('MyTabs');
-      } else {
-        console.log('mmmm');
-
-        console.log(data);
-
-        setIsLoading(false);
-        // Toast.show(data.message);
       }
-      //   }
+    } else {
+      toast.hideAll();
+      toast.show('No Internet Connected!');
     }
   };
 
@@ -120,6 +136,11 @@ const Login = ({navigation}) => {
             onChangeText={v => setEmail(v)}
             inputValue={email}
           />
+          {!isValidEmail(email) && (
+            <Text iserror caption1>
+              {'Not Valid Email'}
+            </Text>
+          )}
         </View>
         <View style={styles.field}>
           <Row>
@@ -147,6 +168,8 @@ const Login = ({navigation}) => {
           width={'100%'}
           height={57}
           onclick={() => handleLogin()}
+          loading={isLoading}
+          disabled={isLoading || password.length < 3 || !isValidEmail(email)}
         />
 
         <Row style={styles.createAccount}>

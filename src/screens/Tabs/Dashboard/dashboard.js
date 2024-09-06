@@ -19,11 +19,12 @@ import DataTable, {COL_TYPES} from 'react-native-datatable-component';
 import {useTheme} from '../../../config/theme';
 import {BarChart} from 'react-native-gifted-charts';
 import {ruleTypes} from 'gifted-charts-core';
+import {useIsFocused} from '@react-navigation/native';
 
 const Dashboard = ({navigation}) => {
   const colors = useTheme();
-  const userData = global.user;
-  const screenWidth = Dimensions.get('window').width;
+  const isFocused = useIsFocused();
+  
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [show, setShow] = useState(false);
@@ -41,16 +42,11 @@ const Dashboard = ({navigation}) => {
   useEffect(() => {
     if (global?.user) {
       if (global?.user?.data?.user?.client?.branches) {
-        // const branchData = global?.user?.data?.user?.client?.branches;
-        // var temp = [];
-        // branchData.map(item => {
-        //   temp.push({...item, label: item.name, value: item.id});
-        // });
-
         setBranches(global?.user?.data?.user?.client?.branches);
+        setBranch(global?.user?.data?.user?.client?.branches[0]);
       }
     }
-  }, []);
+  }, [isFocused]);
 
   const onKeepAlive = item => {
     setBranch(item);

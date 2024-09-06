@@ -3,9 +3,9 @@ import {
   TouchableOpacity,
   StyleSheet,
   ActivityIndicator,
-  Text,View
+  Text,
+  View,
 } from 'react-native';
-
 
 import {mvs} from '../../Services/metrices';
 import Row from './Row';
@@ -24,25 +24,29 @@ const PrimaryButton = ({
   disabled,
   iconName,
   fontSize,
-  iconColor='white',
+  iconColor = 'white',
 }) => {
-   
   return (
     <TouchableOpacity
-      style={{...styles.main, width: width, height: height,backgroundColor:bgColor, ...style}}
+      style={{
+        ...styles.main,
+        width: width,
+        height: height,
+        backgroundColor: bgColor,
+        opacity: disabled ? 0.7 : 1,
+        ...style,
+      }}
+      disabled={disabled}
       onPress={onclick}>
-       
-        <View style={{alignItems: 'center'}}>
-          {loading ? (
-            <ActivityIndicator size={'small'} color={'white'} />
-          ) : (
-            <>
-               
-              <Bold style={{color: color,fontSize:fontSize}} label={label}/>
-            </>
-          )}
-        </View>
-     
+      <View style={{alignItems: 'center'}}>
+        {loading ? (
+          <ActivityIndicator size={'small'} color={'white'} />
+        ) : (
+          <>
+            <Bold style={{color: color, fontSize: fontSize}} label={label} />
+          </>
+        )}
+      </View>
     </TouchableOpacity>
   );
 };
@@ -53,6 +57,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: mvs(10),
     marginVertical: mvs(10),
-    padding:10
+    padding: 10,
   },
 });
