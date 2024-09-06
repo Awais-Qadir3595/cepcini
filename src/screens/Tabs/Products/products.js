@@ -21,13 +21,13 @@ const Products = ({ navigation }) => {
     const [show, setShow] = useState(false);
     const [productsList, setProductList] = useState();
     const [paginate, setPaginate] = useState(1);
-   
+
     const [orderBy, setOrderBy] = useState('desc');
     const [sortBy, setSortBy] = useState('id');
     const [pagination, setPagination] = useState(null);
 
 
-    // console.log('paginate',paginate);
+     
     const pagesizeList = [
         { label: '10', value: 10 },
         { label: '20', value: 20 },
@@ -49,30 +49,27 @@ const Products = ({ navigation }) => {
     }));
 
 
-    
+
 
 
     const getSpecificProduct = async (id) => {
 
 
-     
+
 
         let data = await Axios_Fetch(
 
-            //    `${ROUTES.getSpecificProducts}/${id}`,
             `${ROUTES.getSpecificProducts}/${id}?paginate=${paginate}&page_size=${pageSize}&order_by=${orderBy}&sort_by=${sortBy}`
         );
-        console.log('----------------------------');
+
         setProductList(data?.data?.list);
-        //  console.log(data?.data?.pagination);
-        //  console.log(data?.data?.list?.length);
+
         setPagination(data?.data?.pagination)
 
     }
 
     const renderData = ({ item }) => {
-        // console.log('////////////////////////////////////');
-        // console.log(item);
+
 
 
 
@@ -102,9 +99,7 @@ const Products = ({ navigation }) => {
                 <View style={styles.oneside}>
                     <Label label="Branch" color="grey" />
                 </View>
-                {/* <View style={styles.oneside}>
-                    <Label label="Date" color="grey" />
-                </View> */}
+
             </Row >
             <Row style={styles.statusRow}>
                 <View style={styles.oneside}>
@@ -170,15 +165,7 @@ const Products = ({ navigation }) => {
                 </View>
 
 
-                {/* <View style={styles.oneside}>
-                    <TouchableOpacity onPress={() => setShow(true)}>
-                        <Row style={{ alignItems: 'center' }}>
-                            <Label label={date.toString()} size={12} />
-                            <Calender />
-                        </Row>
 
-                    </TouchableOpacity>
-                </View> */}
 
             </Row>
 
@@ -233,20 +220,19 @@ const Products = ({ navigation }) => {
                     />
                     :
                     <Label label="No data to show" size={12}
-                    style={styles.noDate} />
+                        style={styles.noDate} />
             }
-
 
             {
                 productsList != null ?
                     <Row style={styles.lowerView}>
                         <Label label={'showing' + pagination?.from + ' to ' + pagination?.to + ' of ' + pagination?.total}
-                         size={12}/>
+                            size={12} />
 
-                        {/* <Label label="Showing "{pagination.first} to 5 of 100 entries" size={12} /> */}
+
                         <Previous />
                         <Next />
-                      
+
 
                     </Row>
                     : null
