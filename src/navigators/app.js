@@ -7,37 +7,40 @@ import Splash from '../screens/Splash/splash';
 import Login from '../screens/Login/login';
 import MyTabs from './MyTabs';
 import {ToastProvider} from 'react-native-toast-notifications';
+import {NetworkProvider} from 'react-native-offline';
 
 const Stack = createNativeStackNavigator();
 
 function App() {
   return (
     <ToastProvider>
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen
-            name="Splash"
-            component={Splash}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="Login"
-            component={Login}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="MyTabs"
-            component={MyTabs}
-            options={{
-              headerShown: false,
-            }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <NetworkProvider>
+        <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen
+              name="Splash"
+              component={Splash}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="Login"
+              component={Login}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="MyTabs"
+              component={MyTabs}
+              options={{
+                headerShown: false,
+              }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </NetworkProvider>
     </ToastProvider>
   );
 }
