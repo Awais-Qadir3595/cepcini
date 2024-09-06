@@ -8,6 +8,7 @@ const ROUTES = {
    ticketsStatus:'/tickets-status'
    
 };
+export const LOGIN = BASE_URL + '/login';
 export const KEEP_ALIVE = BASE_URL + '/keepalive-status';
 export const GET_DASHBOARD = BASE_URL + '/dashboard';
 

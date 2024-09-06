@@ -5,16 +5,7 @@ export {default as ProductIcon} from './ProductIcon';
 export {default as TicketIcon} from './TicketIcon';
 export {default as SalesReportIcon} from './SalesReportIcon';
 
-// export {
-//   SplashLogo,
-//   DashboardIcon,
-//   IncomeReportIcon,
-//   ProductIcon,
-//   TicketIcon,
-//   SalesReportIcon,
-// };
 export {default as Logo} from './logo.svg';
-// export {default as SplashData} from './splashData.svg';
 export {default as SplashData} from './Illustration.svg';
 export {default as Countries} from './coutries.svg';
 export {default as CheckboxEmpty} from './checkboxEmpty.svg';

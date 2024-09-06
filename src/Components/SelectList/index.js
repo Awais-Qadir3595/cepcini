@@ -2,7 +2,6 @@ import React, {useEffect, useState, useRef} from 'react';
 import {
   View,
   StyleSheet,
-  Image,
   TouchableOpacity,
   ScrollView,
   Animated,
@@ -207,11 +206,7 @@ const SelectList = ({
               : selected[schema.label]}
           </Text>
           {!arrowicon ? (
-            <Icon
-              name={Icons.ANGLE_DOWN}
-              color={colors.textGrey}
-              size={20}
-            />
+            <Icon name={Icons.ANGLE_DOWN} color={colors.textGrey} size={20} />
           ) : (
             arrowicon
           )}
@@ -321,21 +316,25 @@ const styles = StyleSheet.create({
     borderBottomColor: '#e67567',
   },
   dropdown: {
-    borderWidth: 1,    
+    position: 'absolute',
+    top: 50,
+    left: 0,
+    right: 0,
+    borderWidth: 1,
     borderBottomLeftRadius: 5,
     borderBottomRightRadius: 5,
-    // borderTopRightRadius: 20,
-
     borderColor: BaseColor.textGrey,
     marginTop: 3,
     overflow: 'hidden',
-
     backgroundColor: BaseColor.whiteColor,
-    // shadowColor: BaseColor.primary,
-    // shadowOffset: {width: 0, height: 2},
-    // shadowOpacity: 0.25,
-    // shadowRadius: 3.84,
-    // elevation: 8,
+    zIndex: 1000,
+    // borderWidth: 1,
+    // borderBottomLeftRadius: 5,
+    // borderBottomRightRadius: 5,
+    // borderColor: BaseColor.textGrey,
+    // marginTop: 3,
+    // overflow: 'hidden',
+    // backgroundColor: BaseColor.whiteColor,
   },
   option: {
     paddingHorizontal: 20,
