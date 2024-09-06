@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, ImageBackground, Image, ScrollView, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, ImageBackground, Image, ScrollView, FlatList, ActivityIndicator } from 'react-native';
 
 import { styles } from "./style";
 import Header from "../../../Components/custom/Header";
@@ -25,9 +25,9 @@ const Products = ({ navigation }) => {
     const [orderBy, setOrderBy] = useState('desc');
     const [sortBy, setSortBy] = useState('id');
     const [pagination, setPagination] = useState(null);
+    const [pageNo, setPageNo] = useState(1);
+    let transformedBranches = null;
 
-
-     
     const pagesizeList = [
         { label: '10', value: 10 },
         { label: '20', value: 20 },
@@ -35,31 +35,43 @@ const Products = ({ navigation }) => {
     ];
 
     const [pageSize, setPageSize] = useState(pagesizeList[0].value);
+    if (global?.user) {
+        if (global?.user?.data?.user?.client?.branches) {
+            //  console.log(global?.user?.data?.user?.client?.branches);
+            transformedBranches = global?.user?.data?.user?.client?.branches?.map(branch => ({
+                label: branch.name,
+                value: branch.id,  // or branch.key, depending on your requirement
+            }));
+        }
+
+    }
+    const [selectedBranch, setSelectedBranch] = useState(transformedBranches[0].value);
 
     useEffect(() => {
-        if (global?.user) {
-            if (global?.user?.data?.user?.client?.branches) {
-
-            }
-        }
-    }, []);
-    const transformedBranches = global?.user?.data?.user?.client?.branches?.map(branch => ({
-        label: branch.name,
-        value: branch.id,  // or branch.key, depending on your requirement
-    }));
 
 
 
+        getSpecificProduct()
+
+    }, [selectedBranch, pageSize,pageNo]);
 
 
-    const getSpecificProduct = async (id) => {
+
+    console.log('transformed branches');
+
+    console.log(transformedBranches);
 
 
+
+
+    const getSpecificProduct = async () => {
+
+        let id = selectedBranch;
 
 
         let data = await Axios_Fetch(
 
-            `${ROUTES.getSpecificProducts}/${id}?paginate=${paginate}&page_size=${pageSize}&order_by=${orderBy}&sort_by=${sortBy}`
+            `${ROUTES.getSpecificProducts}/${id}?paginate=${paginate}&page_size=${pageSize}&order_by=${orderBy}&sort_by=${sortBy}&page=${pageNo}`
         );
 
         setProductList(data?.data?.list);
@@ -104,8 +116,9 @@ const Products = ({ navigation }) => {
             <Row style={styles.statusRow}>
                 <View style={styles.oneside}>
                     <RNPickerSelect
-                        onValueChange={(value) => getSpecificProduct(value)}
+                        onValueChange={(value) => setSelectedBranch(value)}
                         items={transformedBranches}
+                        value={selectedBranch}
                     />
                 </View>
 
@@ -219,19 +232,34 @@ const Products = ({ navigation }) => {
                         keyExtractor={(item, index) => index.toString()}
                     />
                     :
-                    <Label label="No data to show" size={12}
+                    <ActivityIndicator size={'small'} color={colorsTheme.primary}
                         style={styles.noDate} />
             }
 
             {
                 productsList != null ?
                     <Row style={styles.lowerView}>
-                        <Label label={'showing' + pagination?.from + ' to ' + pagination?.to + ' of ' + pagination?.total}
+                        <Label label={'showing ' + pagination?.from + ' to ' + pagination?.to + ' of ' + pagination?.total}
                             size={12} />
 
-
-                        <Previous />
-                        <Next />
+                        <TouchableOpacity disabled={pageNo==1?true:false}
+                        style={styles.btn}
+                        onPress={() => {
+                            if(pageNo!=1)
+                            {
+                                setPageNo(pageNo-1)
+                            }
+                            
+                        }}>
+                            <Previous />
+                        </TouchableOpacity >
+                        <View>
+                            <Label label={pageNo} />
+                        </View>
+                        <TouchableOpacity onPress={() => setPageNo(pageNo + 1)}
+                            style={styles.btn}>
+                            <Next />
+                        </TouchableOpacity>
 
 
                     </Row>

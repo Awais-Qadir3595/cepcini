@@ -29,8 +29,9 @@ const Tickets = ({ navigation }) => {
     const [sortBy, setSortBy] = useState('id');
     const [show1, setShow1] = useState(false);
     const [mode, setMode] = useState('date');
-
+    const [pageNo, setPageNo] = useState(1);
     const [pagination, setPagination] = useState(null);
+
     const selectedTicketsData = [
         { label: 'Open', value: 1 },
         { label: 'Close', value: 2 },
@@ -49,17 +50,57 @@ const Tickets = ({ navigation }) => {
     // console.log('paginate',paginate);
     // console.log(selectedTicketsValue);
 
-    useEffect(() => {
-        if (global?.user) {
-            if (global?.user?.data?.user?.client?.branches) {
-
-            }
+    if (global?.user) {
+        if (global?.user?.data?.user?.client?.branches) {
+            //  console.log(global?.user?.data?.user?.client?.branches);
+            transformedBranches = global?.user?.data?.user?.client?.branches?.map(branch => ({
+                label: branch.name,
+                value: branch.id,  // or branch.key, depending on your requirement
+            }));
         }
-    }, []);
-    const transformedBranches = global?.user?.data?.user?.client?.branches?.map(branch => ({
-        label: branch.name,
-        value: branch.id,  // or branch.key, depending on your requirement
-    }));
+
+    }
+    const [selectedBranch, setSelectedBranch] = useState(transformedBranches[0].value);
+
+
+    useEffect(() => {
+
+        getSpecificTickets();
+
+    }, [selectedBranch, pageNo, pageSize, startDate, endDate]);
+
+    const getSpecificTickets = async () => {
+
+
+        console.log('nnnnnnnnnnnn');
+        console.log(startDate);
+
+
+        let sdate = moment(startDate).format('YYYY-MM-DD');
+        let edate = moment(endDate).format('YYYY-MM-DD')
+
+        let id = selectedBranch;
+        console.log(id);
+        console.log(pageSize);
+        console.log(pageNo);
+        console.log(sdate);
+        console.log(edate);
+
+
+        let data = await Axios_Fetch(
+
+            //    `${ROUTES.getSpecificProducts}/${id}`,
+            `${ROUTES.ticketsStatus}?paginate=${paginate}&page_size=${pageSize}&from_date=${sdate}&to_date=${edate}&branch_id=${id}&page=${pageNo}`
+
+        );
+        console.log('----------------------------');
+        // console.log(data?.data?.closed_tickets?.tickets);
+
+        setTicketsList(data?.data);
+
+
+    }
+
 
     const onChange = (event, selectedDate) => {
 
@@ -79,33 +120,7 @@ const Tickets = ({ navigation }) => {
     };
 
 
-    const getSpecificTickets = async (id) => {
 
-
-        console.log('paginate', paginate);
-        console.log('pageSize', pageSize);
-        console.log('order by ', orderBy);
-        console.log('sort by', sortBy);
-
-        console.log(id);
-        let sdate = moment(startDate).format('YYYY-MM-DD');
-        let edate = moment(endDate).format('YYYY-MM-DD')
-        console.log('dddy', sdate);
-        console.log('ggggy', edate);
-
-        let data = await Axios_Fetch(
-
-            //    `${ROUTES.getSpecificProducts}/${id}`,
-            `${ROUTES.ticketsStatus}?paginate=${paginate}&page_size=${pageSize}&from_date=${sdate}&to_date=${edate}&branch_id=${id}`
-
-        );
-        console.log('----------------------------');
-        console.log(data?.data?.closed_tickets?.tickets?.from);
-
-        setTicketsList(data?.data);
-
-
-    }
 
     const renderData = ({ item }) => {
         // console.log('yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy');
@@ -151,14 +166,9 @@ const Tickets = ({ navigation }) => {
             <Row style={styles.statusRow}>
                 <View style={styles.oneside}>
                     <RNPickerSelect
-                        onValueChange={(value) => getSpecificTickets(value)}
+                        onValueChange={(value) => setSelectedBranch(value)}
                         items={transformedBranches}
-                        placeholder={{
-                            label: 'select branch',
-
-                            value: null, // If you don't want a placeholder value to be selectable
-                            color: '#9EA0A4',
-                        }}
+                        value={selectedBranch}
                     />
                 </View>
                 <View style={styles.oneside}>
@@ -381,9 +391,24 @@ const Tickets = ({ navigation }) => {
                         }
 
 
-                        <Previous />
-                        <Next />
-                       
+                        <TouchableOpacity disabled={pageNo == 1 ? true : false}
+                            style={styles.btn}
+                            onPress={() => {
+                                if (pageNo != 1) {
+                                    setPageNo(pageNo - 1)
+                                }
+
+                            }}>
+                            <Previous />
+                        </TouchableOpacity>
+                        <View>
+                            <Label label={pageNo} />
+                        </View>
+                        <TouchableOpacity onPress={() => setPageNo(pageNo + 1)}
+                            style={styles.btn}>
+                            <Next />
+                        </TouchableOpacity>
+
 
 
                     </Row>

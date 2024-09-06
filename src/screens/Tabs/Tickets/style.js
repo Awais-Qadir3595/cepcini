@@ -55,6 +55,10 @@ const styles=StyleSheet.create({
     },
     noDate:{
         alignSelf:'center'
+    },
+    btn:{
+        padding:8,backgroundColor:colorsTheme.primary,borderRadius:10,paddingHorizontal:10
+        
     }
 })
 export {styles};

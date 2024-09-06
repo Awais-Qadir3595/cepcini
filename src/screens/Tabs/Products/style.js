@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import { colorsTheme } from "../../../Services/Color";
 const styles=StyleSheet.create({
 
     main:{
@@ -54,6 +55,11 @@ const styles=StyleSheet.create({
   },
   noDate:{
     alignSelf:'center'
+},
+btn:{
+    padding:8,backgroundColor:colorsTheme.primary,borderRadius:10,paddingHorizontal:10
+    
 }
+ 
 })
 export {styles};
