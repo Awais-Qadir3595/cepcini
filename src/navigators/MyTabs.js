@@ -10,6 +10,7 @@ import SalesReport from '../screens/Tabs/SalesReport/salesReport';
 import Tickets from '../screens/Tabs/Tickets/tickets';
 import Products from '../screens/Tabs/Products/products';
 import {BaseColor, useTheme} from '../config/theme';
+import TicketsStack from './ticketsSkack';
 
 const Tab = createBottomTabNavigator();
 
@@ -26,9 +27,9 @@ const MyTabs = () => {
     },
     {
       id: 2,
-      route: 'Tickets',
+      route: 'TicketsStack',
       Label: 'Tickets',
-      component: Tickets,
+      component: TicketsStack,
       activeIcon: <SVG.TicketIcon color={colors.primary} />,
       InActive: <SVG.TicketIcon />,
     },

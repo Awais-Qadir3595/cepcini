@@ -11,14 +11,93 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { Calender, Countries } from "../../../assets/svgs";
 import Bold from "../../../Components/core/bold";
 import { colorsTheme } from "../../../Services/Color";
+import Modal from "react-native-modal";
+import DrawHorizentalLine from "../../../Components/core/drawHorizentalLine";
+import { stylesModel } from "./modelStyle";
+
+
 const TicketsDetail = ({ navigation }) => {
 
     const [date, setDate] = useState(new Date());
     const [show, setShow] = useState(false);
-    const [ticketsData,setTicketsData]=useState(null);
-    
+    const [ticketsData, setTicketsData] = useState(null);
+
     return (
         <ScrollView style={styles.main}>
+
+
+            <Modal isVisible={true} backdropColor={'grey'} backdropOpacity={1}>
+
+                <View style={stylesModel.main}>
+
+                    <View style={stylesModel.rightRound}>
+
+                    </View>
+                    <View style={stylesModel.leftRound}>
+
+                    </View>
+                    <Bold label='AWS Machine Branch-2' style={stylesModel.heading} size={16} color={'black'} />
+                    <Row style={stylesModel.dateTime}>
+                        <Label label='02/05/2023'  size={13}/>
+                        <Label label='11:36:20 AM' size={13}/>
+                    </Row>
+                    <Label label='Ticket Id # 12345678' style={stylesModel.txt} size={13}/>
+                    <Label label='Mr.John' style={stylesModel.txt} size={13} />
+                    <DrawHorizentalLine borderStyle='dashed' style={stylesModel.line} />
+
+                    <Row style={stylesModel.rwHead}>
+                        <Bold label='Qty' size={13}/>
+                        <Bold label='Name' size={13}/>
+                        <Bold label='Price' size={13}/>
+                    </Row>
+                    <Row style={stylesModel.rowData}>
+                        <Label label='01' size={12} />
+                        <Label label='Toasted Bagal Jam' size={12} />
+                        <Label label='$1200' size={12} />
+                    </Row>
+                    <Row style={stylesModel.rowData}>
+                        <Label label='01' size={12} />
+                        <Label label='Toasted Bagal Jam' size={12} />
+                        <Label label='$1200' size={12} />
+                    </Row>
+                    <Row style={stylesModel.rowData}>
+                        <Label label='01' size={12} />
+                        <Label label='Toasted Bagal Jam' size={12} />
+                        <Label label='$1200' size={12} />
+                    </Row>
+                    <View style={stylesModel.lowerView}>
+
+                        <DrawHorizentalLine borderStyle='dashed' style={stylesModel.line} />
+                        <Row style={stylesModel.rowLower}>
+                            <Label label='Ticket type' size={13} />
+                            <Bold label='Delivery' size={13} />
+                        </Row>
+
+                        <Row style={stylesModel.rowLower}>
+                            <Label label='Total Amount ' size={13} />
+                            <Bold label='$2.34' size={13} />
+                        </Row>
+
+                        <Row style={stylesModel.rowLower}>
+                            <Label label='Remaining amount' size={13} />
+                            <Bold label='$3.45' size={13} />
+                        </Row>
+
+                        <Row style={stylesModel.rowLower}>
+                            <Label label='Cash' size={13} />
+                            <Bold label='$3.45' size={13} />
+                        </Row>
+
+                        <DrawHorizentalLine borderStyle='dashed' style={stylesModel.line} color='grey' />
+
+<Bold label="Thank you !" style={stylesModel.heading} color="black"/>
+                    </View>
+
+
+                </View>
+            </Modal>
+
+
             <Row style={styles.rw}>
                 <BackIcon />
                 <Label label="Tickets Detail" size={20} style={styles.heading} />
@@ -75,7 +154,7 @@ const TicketsDetail = ({ navigation }) => {
                     onChange={onChange}
                 />
             )}
-            <Bold label="Dashboard" size={24} color='black' />
+            <Bold label="Tickets Detail" size={24} color='black' />
             <Label label="Tickets / Tickets Details" size={14} color="grey" style={styles.subheading} />
 
 
@@ -141,10 +220,10 @@ const TicketsDetail = ({ navigation }) => {
                 <Label label="Amount Detail" size={18} color={colorsTheme.primary} />
                 <Row style={styles.Rowdetail}>
                     <View style={styles.oneside}>
-                        <Label label="Total amount" size={15}  />
+                        <Label label="Total amount" size={15} />
                     </View>
                     <View style={styles.oneside}>
-                        <Label label="Remaining amount" size={15}  />
+                        <Label label="Remaining amount" size={15} />
                     </View>
                 </Row>
 
@@ -158,7 +237,7 @@ const TicketsDetail = ({ navigation }) => {
                 </Row>
             </View>
 
-            <View style={{...styles.orderContainer,marginBottom:40}}>
+            <View style={{ ...styles.orderContainer, marginBottom: 40 }}>
                 <Label label="Payments Detail" size={18} color={colorsTheme.primary} />
                 <Row style={styles.Rowdetail}>
                     <View style={styles.oneside}>

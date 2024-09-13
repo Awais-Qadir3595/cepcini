@@ -19,12 +19,14 @@ import moment from 'moment';
 import TicketsDataComponent from "../../../Components/custom/ticketsDataComponent";
 const Tickets = ({ navigation }) => {
 
+    
+    
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
     const [show, setShow] = useState(false);
-    const [ticketList, setTicketsList] = useState();
+    const [ticketList, setTicketsList] = useState([]);
     const [paginate, setPaginate] = useState(1);
-
+    console.log('nnnn',ticketList);
     const [orderBy, setOrderBy] = useState('desc');
     const [sortBy, setSortBy] = useState('id');
     const [show1, setShow1] = useState(false);
@@ -67,7 +69,7 @@ const Tickets = ({ navigation }) => {
 
         getSpecificTickets();
 
-    }, [selectedBranch, pageNo, pageSize, startDate, endDate]);
+    }, [selectedBranch, pageNo, pageSize, startDate, endDate,]);
 
     const getSpecificTickets = async () => {
 
@@ -120,6 +122,7 @@ const Tickets = ({ navigation }) => {
     };
 
 
+console.log(selectedTicketsValue);
 
 
     const renderData = ({ item }) => {
@@ -130,19 +133,21 @@ const Tickets = ({ navigation }) => {
 
 
         return (
+            <TouchableOpacity onPress={()=>navigation.navigate('TicketsDetail')}>
+                <TicketsDataComponent id={item.id} date={item.date}
+                    user={item?.raw_data?.orders[0]?.user}
+                    tAmount={item.total_amount}
+                    type={item?.raw_data?.type}
+                />
+            </TouchableOpacity>
 
-            <TicketsDataComponent id={item.id} date={item.date}
-                user={item?.raw_data?.orders[0]?.user}
-                tAmount={item.total_amount}
-                type={item?.raw_data?.type}
-            />
         )
     }
     return (
         <ScrollView style={styles.main}>
             <Row style={styles.rw}>
                 <BackIcon />
-                <Label label="Products List" size={20} style={styles.heading} />
+                <Label label="Tickets List" size={20} style={styles.heading} />
 
             </Row>
             <Row style={styles.statusRow}>
@@ -209,8 +214,8 @@ const Tickets = ({ navigation }) => {
                     onChange={onChange1}
                 />
             )}
-            <Bold label="Branch Products List" size={24} color='black' />
-            <Label label="Products / Products List" size={14} color="grey" style={styles.subheading} />
+            <Bold label="Branch Tickets List" size={24} color='black' />
+            <Label label="Tickets / Tickets List" size={14} color="grey" style={styles.subheading} />
 
             <Row>
                 <View style={styles.dropDown}>
