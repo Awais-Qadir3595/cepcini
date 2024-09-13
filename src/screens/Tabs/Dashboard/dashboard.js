@@ -64,7 +64,7 @@ const Dashboard = ({navigation}) => {
     });
 
     await pusher.connect();
-    var channel = await pusher.subscribe({
+     await pusher.subscribe({
       channelName: 'laravel-pusher-development',
       onEvent: event => {
         console.log(`Event received: ${event}`);
@@ -76,12 +76,8 @@ const Dashboard = ({navigation}) => {
         console.log(name, msg, err, 'error----');
       },
     });
-    console.log(channel);
+    // console.log(channel);
     
-    // channel.bind('ping-status-{18}', function(data) {
-    //   console.log(JSON.stringify(data),"__");
-    //   // console.log(JSON.stringify(data),"__");
-    // });
   };
 
   const onKeepAlive = item => {
