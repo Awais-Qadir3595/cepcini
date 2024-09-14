@@ -20,11 +20,19 @@ import {useTheme} from '../../../config/theme';
 import {BarChart} from 'react-native-gifted-charts';
 import {ruleTypes} from 'gifted-charts-core';
 import {useIsFocused} from '@react-navigation/native';
+import {
+  Pusher,
+  PusherMember,
+  PusherChannel,
+  PusherEvent,
+} from '@pusher/pusher-websocket-react-native';
+
+const pusher = Pusher.getInstance();
 
 const Dashboard = ({navigation}) => {
   const colors = useTheme();
   const isFocused = useIsFocused();
-  
+
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [show, setShow] = useState(false);
@@ -46,7 +54,31 @@ const Dashboard = ({navigation}) => {
         setBranch(global?.user?.data?.user?.client?.branches[0]);
       }
     }
+    connectPusher();
   }, [isFocused]);
+
+  const connectPusher = async () => {
+    await pusher.init({
+      apiKey: 'af92ce129c59db01ccfb',
+      cluster: 'ap2',
+    });
+
+    await pusher.connect();
+     await pusher.subscribe({
+      channelName: 'laravel-pusher-development',
+      onEvent: event => {
+        console.log(`Event received: ${event}`);
+      },
+      onSubscriptionSucceeded: data => {
+        console.log(data, 'success');
+      },
+      onSubscriptionError: (name, msg, err) => {
+        console.log(name, msg, err, 'error----');
+      },
+    });
+    // console.log(channel);
+    
+  };
 
   const onKeepAlive = item => {
     setBranch(item);
@@ -78,6 +110,8 @@ const Dashboard = ({navigation}) => {
         setBranchStatus(null);
       });
   };
+
+  const checkPingStatus = item => {};
 
   const getDashboardData = item => {
     const url =
@@ -225,7 +259,7 @@ const Dashboard = ({navigation}) => {
                 value: 'id',
               }}
               data={branches}
-              setSelected={item => onKeepAlive(item)}
+              setSelected={item => checkPingStatus(item)}
             />
           </View>
 
