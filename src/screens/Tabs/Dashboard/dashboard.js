@@ -46,7 +46,6 @@ const Dashboard = ({navigation}) => {
   const [branchStatus, setBranchStatus] = useState(null);
   const [dashData, setDashData] = useState(null);
   const [graphData, setGraphData] = useState(null);
-  const [yAxisLabes, setYAxisLabels] = useState(null);
 
   useEffect(() => {
     if (global?.user) {
@@ -63,24 +62,21 @@ const Dashboard = ({navigation}) => {
   }, [branchKey]);
 
   const connectPusher = async () => {
-    console.log(branchKey);
     await pusher.init({
       apiKey: 'af92ce129c59db01ccfb',
       cluster: 'ap2',
     });
 
     await pusher.connect();
-
     await pusher.subscribe({
       channelName: `ping-status-${branchKey}`,
       onEvent: event => {
-        console.log(`Event received: ${event}----`);
-
         if (event) setBranchStatus(event);
         else setBranchStatus(null);
       },
       onSubscriptionSucceeded: data => {
         console.log(data, 'success');
+        setBranchStatus(null);
       },
       onSubscriptionError: (name, msg, err) => {
         console.log(name, msg, err, 'error');
@@ -91,11 +87,10 @@ const Dashboard = ({navigation}) => {
     });
   };
 
-  const checkPingStatus = item => {
+  const checkPingStatus = async item => {
+    await pusher.unsubscribe({channelName: `ping-status-${branchKey}`});
     setBranch(item);
     setBranchKey(item?.key);
-    setBranchStatus(null);
-    // connectPusher();
     getDashboardData(item);
   };
 
