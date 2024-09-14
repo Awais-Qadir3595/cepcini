@@ -24,7 +24,7 @@ export default function Header({name = ''}) {
         </Row>
 
         <Row style={styles.rw}>
-          <NotificationIcon />
+          <NotificationIcon  style={{marginHorizontal:10}}/>
           <TouchableOpacity onPress={toggleDrawer}>
             <OptionIcon />
           </TouchableOpacity>

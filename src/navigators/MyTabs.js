@@ -11,6 +11,7 @@ import Tickets from '../screens/Tabs/Tickets/tickets';
 import Products from '../screens/Tabs/Products/products';
 import {BaseColor, useTheme} from '../config/theme';
 import TicketsStack from './ticketsSkack';
+import DrawerScreens from './drawerScreens';
 
 const Tab = createBottomTabNavigator();
 
@@ -33,14 +34,22 @@ const MyTabs = () => {
       activeIcon: <SVG.TicketIcon color={colors.primary} />,
       InActive: <SVG.TicketIcon />,
     },
-    {
+      {
       id: 3,
       route: 'Dashboard',
       Label: 'Dashboard',
-      component: Dashboard,
+      component: DrawerScreens,
       activeIcon: <SVG.DashboardIcon color={colors.whiteColor} />,
       InActive: <SVG.DashboardIcon color={colors.textGrey} />,
     },
+    // {
+    //   id: 3,
+    //   route: 'Dashboard',
+    //   Label: 'Dashboard',
+    //   component: Dashboard,
+    //   activeIcon: <SVG.DashboardIcon color={colors.whiteColor} />,
+    //   InActive: <SVG.DashboardIcon color={colors.textGrey} />,
+    // },
     {
       id: 4,
       route: 'IncomeReport',
