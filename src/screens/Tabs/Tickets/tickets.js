@@ -19,14 +19,14 @@ import moment from 'moment';
 import TicketsDataComponent from "../../../Components/custom/ticketsDataComponent";
 const Tickets = ({ navigation }) => {
 
-    
-    
+
+
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
     const [show, setShow] = useState(false);
     const [ticketList, setTicketsList] = useState([]);
     const [paginate, setPaginate] = useState(1);
-    console.log('nnnn',ticketList);
+    // console.log('nnnn', ticketList);
     const [orderBy, setOrderBy] = useState('desc');
     const [sortBy, setSortBy] = useState('id');
     const [show1, setShow1] = useState(false);
@@ -47,14 +47,11 @@ const Tickets = ({ navigation }) => {
     ];
     const [pageSize, setPageSize] = useState(pagesizeList[0].value);
     const [selectedTicketsValue, setSelectedTicketsValue] = useState(selectedTicketsData[0].value)
-    // console.log(selectedTicketsValue);
 
-    // console.log('paginate',paginate);
-    // console.log(selectedTicketsValue);
 
     if (global?.user) {
         if (global?.user?.data?.user?.client?.branches) {
-            //  console.log(global?.user?.data?.user?.client?.branches);
+
             transformedBranches = global?.user?.data?.user?.client?.branches?.map(branch => ({
                 label: branch.name,
                 value: branch.id,  // or branch.key, depending on your requirement
@@ -74,19 +71,19 @@ const Tickets = ({ navigation }) => {
     const getSpecificTickets = async () => {
 
 
-        console.log('nnnnnnnnnnnn');
-        console.log(startDate);
+        // console.log('nnnnnnnnnnnn');
+        // console.log(startDate);
 
 
         let sdate = moment(startDate).format('YYYY-MM-DD');
         let edate = moment(endDate).format('YYYY-MM-DD')
 
         let id = selectedBranch;
-        console.log(id);
-        console.log(pageSize);
-        console.log(pageNo);
-        console.log(sdate);
-        console.log(edate);
+        // console.log(id);
+        // console.log(pageSize);
+        // console.log(pageNo);
+        // console.log(sdate);
+        // console.log(edate);
 
 
         let data = await Axios_Fetch(
@@ -95,21 +92,23 @@ const Tickets = ({ navigation }) => {
             `${ROUTES.ticketsStatus}?paginate=${paginate}&page_size=${pageSize}&from_date=${sdate}&to_date=${edate}&branch_id=${id}&page=${pageNo}`
 
         );
-        console.log('----------------------------');
+        // console.log('----------------------------');
         // console.log(data?.data?.closed_tickets?.tickets);
 
         setTicketsList(data?.data);
 
 
     }
+    console.log('//////////////////////////////////////////////////');
 
+    console.log('bbbb = ', ticketList);
 
     const onChange = (event, selectedDate) => {
 
 
         const currentDate = selectedDate || startDate;
         setShow(Platform.OS === 'ios');
-        console.log('start = ', currentDate);
+        // console.log('start = ', currentDate);
         setStartDate(currentDate)
 
     };
@@ -117,12 +116,12 @@ const Tickets = ({ navigation }) => {
     const onChange1 = (event, selectedDate) => {
         const currentDate = selectedDate || endDate;
         setShow1(Platform.OS === 'ios');
-        console.log('end = ', moment(currentDate).format('YYYY-MM-DD'));
+        // console.log('end = ', moment(currentDate).format('YYYY-MM-DD'));
         setEndDate(currentDate);
     };
 
 
-console.log(selectedTicketsValue);
+    // console.log(selectedTicketsValue);
 
 
     const renderData = ({ item }) => {
@@ -133,7 +132,7 @@ console.log(selectedTicketsValue);
 
 
         return (
-            <TouchableOpacity onPress={()=>navigation.navigate('TicketsDetail')}>
+            <TouchableOpacity onPress={() => navigation.navigate('TicketsDetail')}>
                 <TicketsDataComponent id={item.id} date={item.date}
                     user={item?.raw_data?.orders[0]?.user}
                     tAmount={item.total_amount}
@@ -338,7 +337,8 @@ console.log(selectedTicketsValue);
 
             {
 
-                ticketList != null ?
+                ticketList?.closed_tickets?.tickets?.data?.length > 0 || ticketList?.open_tickets?.tickets?.data?.length > 0
+                    ?
                     <>
                         <Row style={styles.headingdata}>
 
@@ -372,8 +372,42 @@ console.log(selectedTicketsValue);
                                 ticketList?.closed_tickets?.tickets?.data
                             }
                             renderItem={renderData}
-                            keyExtractor={(item, index) => index.toString()}
+                            keyExtractor={(item, index) => index.toString()} c
+                        // extraData={selectedTicketsValue}
                         />
+                        <Row style={styles.lowerView}>
+                            {
+                                selectedTicketsValue == 1 ?
+                                    <Label label={'showing ' + ticketList?.open_tickets?.tickets?.from + ' to ' + ticketList?.open_tickets?.tickets?.to + ' of ' + ticketList?.open_tickets?.tickets?.total}
+                                        size={12} />
+                                    :
+                                    <Label label={'showing ' + ticketList?.closed_tickets?.tickets?.from + ' to ' + ticketList?.closed_tickets?.tickets?.to + ' of ' + ticketList?.closed_tickets?.tickets?.total}
+                                        size={12} />
+
+                            }
+
+
+                            <TouchableOpacity disabled={pageNo == 1 ? true : false}
+                                style={styles.btn}
+                                onPress={() => {
+                                    if (pageNo != 1) {
+                                        setPageNo(pageNo - 1)
+                                    }
+
+                                }}>
+                                <Previous />
+                            </TouchableOpacity>
+                            <View>
+                                <Label label={pageNo} />
+                            </View>
+                            <TouchableOpacity onPress={() => setPageNo(pageNo + 1)}
+                                style={styles.btn}>
+                                <Next />
+                            </TouchableOpacity>
+
+
+
+                        </Row>
                     </>
                     :
                     <Label label="No data to show" size={12}
@@ -382,43 +416,12 @@ console.log(selectedTicketsValue);
             }
 
 
-            {
-                ticketList != null ?
-                    <Row style={styles.lowerView}>
-                        {
-                            selectedTicketsValue == 1 ?
-                                <Label label={'showing ' + ticketList?.open_tickets?.tickets?.from + ' to ' + ticketList?.open_tickets?.tickets?.to + ' of ' + ticketList?.open_tickets?.tickets?.total}
-                                    size={12} />
-                                :
-                                <Label label={'showing ' + ticketList?.closed_tickets?.tickets?.from + ' to ' + ticketList?.closed_tickets?.tickets?.to + ' of ' + ticketList?.closed_tickets?.tickets?.total}
-                                    size={12} />
-
-                        }
-
-
-                        <TouchableOpacity disabled={pageNo == 1 ? true : false}
-                            style={styles.btn}
-                            onPress={() => {
-                                if (pageNo != 1) {
-                                    setPageNo(pageNo - 1)
-                                }
-
-                            }}>
-                            <Previous />
-                        </TouchableOpacity>
-                        <View>
-                            <Label label={pageNo} />
-                        </View>
-                        <TouchableOpacity onPress={() => setPageNo(pageNo + 1)}
-                            style={styles.btn}>
-                            <Next />
-                        </TouchableOpacity>
-
-
-
-                    </Row>
-                    : null
-            }
+            {/* {
+                ticketList?.closed_tickets?.tickets?.data.length!=0 != null && ticketList?.open_tickets?.tickets?.data != 0 ?
+                 
+                    : 
+                    <Label label="No data to show"/>
+            } */}
 
 
 

@@ -35,7 +35,7 @@ const Axios_Post_data=(obj,url)=>{
       url: `${BASE_URL}${url}`,
       data: obj,
       headers:{
-        "Authorization": "Bearer "+ global?.userData?.token,
+        "Authorization": "Bearer "+ global?.user?.data?.token,
         // "Authorization": "Bearer "+ '264|WvTcfIZER26iDbx2uRszRQmbLr4Rteko3YPic7x3ef7ec315',
       }
     }).then((Response)=>{

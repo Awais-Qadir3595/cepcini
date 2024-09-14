@@ -42,7 +42,7 @@ const styles=StyleSheet.create({
         borderWidth:0.5,borderColor:'grey',borderRadius:10,height:40,
     },
     v1:{
-        width:'10%', 
+        width:'20%', 
     },
     headingdata:{
           alignItems:'center',padding:5,backgroundColor:'rgba(70, 74, 83, 0.07)'
@@ -59,7 +59,16 @@ const styles=StyleSheet.create({
 btn:{
     padding:8,backgroundColor:colorsTheme.primary,borderRadius:10,paddingHorizontal:10
     
-}
+},
+modalMain:{
+    padding:10,backgroundColor:"white",borderRadius:20,paddingHorizontal:20
+},
+inputText: {
+    height: 55,
+    borderColor: '#9BA6A7',
+    borderWidth: 0.3,
+    borderRadius: 8,
+  },
  
 })
 export {styles};

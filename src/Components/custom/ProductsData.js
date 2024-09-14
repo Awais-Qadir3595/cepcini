@@ -1,10 +1,10 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, Touchable, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import Row from '../core/Row'
 import Label from '../core/Label'
 import { DeleteIcon, EditIcon } from '../../assets/svgs'
 
-export default function ProductsData({id,name,groupCode,price}) {
+export default function ProductsData({id,name,groupCode,price,onEdit}) {
   return (
     <Row style={styles.main}>
         <View style={styles.viewId}>
@@ -16,13 +16,13 @@ export default function ProductsData({id,name,groupCode,price}) {
         <View style={styles.viewName}>
         <Label label={groupCode} size={10}/>
         </View>
-        <View style={styles.viewId}>
+        <View style={styles.viewName}>
         <Label label={price} size={12}/>
         </View>
-        <Row style={styles.icons}>
-        {/* <EditIcon/>
-        <DeleteIcon/> */}
-        </Row>
+        <TouchableOpacity style={styles.icons} onPress={onEdit}>
+        <EditIcon/>
+        {/* <DeleteIcon/> */}
+        </TouchableOpacity>
     </Row>
   )
 }
@@ -32,12 +32,12 @@ const styles = StyleSheet.create({
         alignItems:'center',padding:5,marginVertical:5
     },
     viewId:{
-        width:'10%',justifyContent:'center'
+        width:'20%',justifyContent:'center', 
     },
     icons:{
-         width:'20%', paddingHorizontal:5
+         width:'20%',  alignItems:"center",
     },
     viewName:{
-        width:'20%', 
+        width:'20%', alignItems:'center'
     }
 })
