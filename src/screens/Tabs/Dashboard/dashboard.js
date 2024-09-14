@@ -42,6 +42,7 @@ const Dashboard = ({navigation}) => {
   const [type2, setType2] = useState(false);
   const [branches, setBranches] = useState([]);
   const [branch, setBranch] = useState(null);
+  const [branchKey, setBranchKey] = useState(null);
   const [branchStatus, setBranchStatus] = useState(null);
   const [dashData, setDashData] = useState(null);
   const [graphData, setGraphData] = useState(null);
@@ -52,66 +53,51 @@ const Dashboard = ({navigation}) => {
       if (global?.user?.data?.user?.client?.branches) {
         setBranches(global?.user?.data?.user?.client?.branches);
         setBranch(global?.user?.data?.user?.client?.branches[0]);
+        setBranchKey(global?.user?.data?.user?.client?.branches[0]?.key);
       }
     }
-    connectPusher();
   }, [isFocused]);
 
+  useEffect(() => {
+    connectPusher();
+  }, [branchKey]);
+
   const connectPusher = async () => {
+    console.log(branchKey);
     await pusher.init({
       apiKey: 'af92ce129c59db01ccfb',
       cluster: 'ap2',
     });
 
     await pusher.connect();
-     await pusher.subscribe({
-      channelName: 'laravel-pusher-development',
+
+    await pusher.subscribe({
+      channelName: `ping-status-${branchKey}`,
       onEvent: event => {
-        console.log(`Event received: ${event}`);
+        console.log(`Event received: ${event}----`);
+
+        if (event) setBranchStatus(event);
+        else setBranchStatus(null);
       },
       onSubscriptionSucceeded: data => {
         console.log(data, 'success');
       },
       onSubscriptionError: (name, msg, err) => {
+        console.log(name, msg, err, 'error');
+      },
+      onError: (name, msg, err) => {
         console.log(name, msg, err, 'error----');
       },
     });
-    // console.log(channel);
-    
   };
 
-  const onKeepAlive = item => {
+  const checkPingStatus = item => {
     setBranch(item);
+    setBranchKey(item?.key);
+    setBranchStatus(null);
+    // connectPusher();
     getDashboardData(item);
-    const url = KEEP_ALIVE + `?branch_id=${item?.id}`;
-    axios({
-      url,
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${global?.user?.data?.token}`,
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      //   params: params,
-    })
-      .then(async resp => {
-        if (resp?.data) {
-          try {
-            // console.log(resp?.data);
-            setBranchStatus(resp?.data);
-          } catch (e) {
-            console.log(e, 'error');
-            setBranchStatus(null);
-          }
-        }
-      })
-      .catch(e => {
-        console.log(e);
-        setBranchStatus(null);
-      });
   };
-
-  const checkPingStatus = item => {};
 
   const getDashboardData = item => {
     const url =
@@ -120,7 +106,7 @@ const Dashboard = ({navigation}) => {
         endDate,
       ).format('YYYY-MM-DD')}&branch_id=${item?.id}`;
 
-    console.log(url);
+    // console.log(url);
 
     axios({
       url,
@@ -165,7 +151,6 @@ const Dashboard = ({navigation}) => {
               //     );
               //   }
               //   setYAxisLabels(yAxisLabelTexts);
-              console.log('--------');
 
               setGraphData(temp);
             }
@@ -211,7 +196,7 @@ const Dashboard = ({navigation}) => {
         <Row style={styles.statusRow}>
           <Row style={styles.statusRow}>
             <Label label="Status" size={14} color="grey" />
-            {branchStatus?.keep_alive ? (
+            {branchStatus ? (
               <View
                 style={[
                   styles.statusValue,
