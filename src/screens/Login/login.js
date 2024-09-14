@@ -70,11 +70,19 @@ const Login = ({navigation}) => {
         })
           .then(async resp => {
             const data = resp?.data;
-            if (data.success) {
+            console.log('entered   -----');
+            
+            console.log(data.success);
+            
+            if (data?.success) {
+            
+              
               setIsLoading(false);
-              // console.log(data.success);
+              
               global.user = data;
               const user = JSON.stringify(data);
+              
+
               await AsyncStorage.setItem('@UserData', user);
               await AsyncStorage.setItem('@isLoggedIn', 'true');
               if (remMe) {
@@ -84,13 +92,13 @@ const Login = ({navigation}) => {
                 });
                 await AsyncStorage.setItem('@LoginCred', jsonValue);
               } else {
-                await AsyncStorage.setItem('@LoginCred', null);
+                await AsyncStorage.removeItem('@LoginCred');
               }
               toast.hideAll();
               toast.show('Login Successful');
               navigation.replace('MyTabs');
             } else {
-              toast.hideAll();
+              // toast.hideAll();
               toast.show('Something went wrong');
               setIsLoading(false);
             }
@@ -98,7 +106,7 @@ const Login = ({navigation}) => {
           .catch(e => {
             console.log(e);
             toast.hideAll();
-            toast.show('Something went wrong');
+            toast.show('Something went wrongss');
             setIsLoading(false);
           });
       }

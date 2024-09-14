@@ -47,7 +47,8 @@ const CustomDrawer = ({isDrawerVisible, toggleDrawer}) => {
           </View>
         </View>
 
-        <TouchableOpacity style={styles.item}>
+
+        <TouchableOpacity style={styles.item} onPress={()=>navigation.navigate('DashboardScreen')}>
           <View style={styles.itemIcon}>
             <Icon
               name={Icons.LOGOUT}
@@ -56,7 +57,7 @@ const CustomDrawer = ({isDrawerVisible, toggleDrawer}) => {
               size={20}
             />
           </View>
-          <Text body1>Close Drawer</Text>
+          <Text body1>Dashboard</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.item}>
@@ -69,6 +70,18 @@ const CustomDrawer = ({isDrawerVisible, toggleDrawer}) => {
             />
           </View>
           <Text body1>Privacy Policy</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.item} onPress={()=>navigation.navigate('IncomeReport')}>
+          <View style={styles.itemIcon}>
+            <Icon
+              name={Icons.LOGOUT}
+              type="ant"
+              color={colors.primary}
+              size={20}
+            />
+          </View>
+          <Text body1>Income Report</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.item}>

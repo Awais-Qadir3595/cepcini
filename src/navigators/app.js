@@ -8,6 +8,7 @@ import Login from '../screens/Login/login';
 import MyTabs from './MyTabs';
 import {ToastProvider} from 'react-native-toast-notifications';
 import {NetworkProvider} from 'react-native-offline';
+import IncomeReport from '../screens/Tabs/IncomeReport/incomeReport';
 
 const Stack = createNativeStackNavigator();
 
@@ -30,7 +31,15 @@ function App() {
               options={{
                 headerShown: false,
               }}
-            />
+            /> 
+              <Stack.Screen
+            name="IncomeReport"
+            component={IncomeReport}
+            options={{
+              headerShown: false,
+            }}
+          />
+
             <Stack.Screen
               name="MyTabs"
               component={MyTabs}
