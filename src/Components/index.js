@@ -4,5 +4,6 @@ import * as Icons from './Icon/ICONS';
 import Icon from './Icon';
 import Checkbox from './Checkbox';
 import Drawer from './Drawer';
+import ReportsTable from './ReportsTable';
 
-export {Text, Dropdown, Icons, Icon, Checkbox, Drawer};
+export {Text, Dropdown, Icons, Icon, Checkbox, Drawer, ReportsTable};

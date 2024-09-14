@@ -20,12 +20,7 @@ import {useTheme} from '../../../config/theme';
 import {BarChart} from 'react-native-gifted-charts';
 import {ruleTypes} from 'gifted-charts-core';
 import {useIsFocused} from '@react-navigation/native';
-import {
-  Pusher,
-  PusherMember,
-  PusherChannel,
-  PusherEvent,
-} from '@pusher/pusher-websocket-react-native';
+import {Pusher} from '@pusher/pusher-websocket-react-native';
 
 const pusher = Pusher.getInstance();
 

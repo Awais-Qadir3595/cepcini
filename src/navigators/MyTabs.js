@@ -11,6 +11,7 @@ import Tickets from '../screens/Tabs/Tickets/tickets';
 import Products from '../screens/Tabs/Products/products';
 import {BaseColor, useTheme} from '../config/theme';
 import TicketsStack from './ticketsSkack';
+import CustomReport from '../screens/Tabs/CustomReport';
 
 const Tab = createBottomTabNavigator();
 
@@ -43,9 +44,9 @@ const MyTabs = () => {
     },
     {
       id: 4,
-      route: 'IncomeReport',
-      Label: 'Income Report',
-      component: IncomeReport,
+      route: 'CustomReport',
+      Label: 'Custom Report',
+      component: CustomReport,
       activeIcon: <SVG.IncomeReportIcon color={colors.primary} />,
       InActive: <SVG.IncomeReportIcon />,
     },
