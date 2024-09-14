@@ -5,7 +5,8 @@ const ROUTES = {
   // addUser:'adduser',
   userlogin: '/login',
    getSpecificProducts:'/products',
-   ticketsStatus:'/tickets-status'
+   ticketsStatus:'/tickets-status',
+   PriceChange:'/sambapos/product/update'
    
 };
 export const LOGIN = BASE_URL + '/login';
