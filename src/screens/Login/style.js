@@ -4,7 +4,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: 'white',
-    justifyContent: 'space-evenly',
+    // justifyContent: 'space-evenly',
   },
   logo: {
     alignSelf: 'center',

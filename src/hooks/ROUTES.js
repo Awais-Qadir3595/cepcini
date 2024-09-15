@@ -11,6 +11,7 @@ const ROUTES = {
 export const LOGIN = BASE_URL + '/login';
 export const KEEP_ALIVE = BASE_URL + '/keepalive-status';
 export const GET_DASHBOARD = BASE_URL + '/dashboard';
+export const GET_SALES_REPORT = BASE_URL + '/product-sales-report';
 export const GET_REPORTS = BASE_URL + '/reports';
 export const CUSTOM_REPORT = BASE_URL + '/custom-report';
 

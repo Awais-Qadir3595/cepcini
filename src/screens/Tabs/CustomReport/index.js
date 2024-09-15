@@ -1,5 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {View, TouchableOpacity, ScrollView} from 'react-native';
+import {
+  View,
+  TouchableOpacity,
+  ScrollView,
+  ActivityIndicator,
+} from 'react-native';
 import {styles} from './style';
 import Header from '../../../Components/custom/Header';
 import Label from '../../../Components/core/Label';
@@ -39,6 +44,7 @@ const CustomReport = ({navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [reportData, setReportData] = useState(null);
   const [reportsLoading, setReportsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (global?.user) {
@@ -89,41 +95,53 @@ const CustomReport = ({navigation}) => {
   };
 
   const onGetData = item => {
-    const url = GET_REPORTS + `/${item?.id}`;
-    axios({
-      url,
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${global?.user?.data?.token}`,
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-    })
-      .then(async resp => {
-        if (resp?.data) {
-          try {
-            setReports(resp?.data);
-          } catch (e) {
-            console.log(e, 'error');
-            setReports(null);
-          }
-        }
+    if (isConnected) {
+      setIsLoading(true);
+      const url = GET_REPORTS + `/${item?.id}`;
+      axios({
+        url,
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${global?.user?.data?.token}`,
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
       })
-      .catch(e => {
-        console.log(e);
-      });
+        .then(async resp => {
+          if (resp?.data) {
+            try {
+              setReports(resp?.data);
+              setIsLoading(false);
+            } catch (e) {
+              console.log(e, 'error');
+              setReports(null);
+              setIsLoading(false);
+            }
+          }
+        })
+        .catch(e => {
+          console.log(e);
+          setIsLoading(false);
+        });
+    } else {
+      toast.hideAll();
+      toast.show('No Internet Connected!');
+      setIsLoading(false);
+    }
   };
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || startDate;
     setShow(Platform.OS === 'ios');
     setStartDate(currentDate);
+    onGetData(branch);
   };
 
   const onChange1 = (event, selectedDate) => {
     const currentDate = selectedDate || endDate;
     setShow1(Platform.OS === 'ios');
     setEndDate(currentDate);
+    onGetData(branch);
   };
 
   const viewData = async (ind, item) => {
@@ -219,75 +237,84 @@ const CustomReport = ({navigation}) => {
             {'Report Actions'}
           </Text>
         </View>
-        {reports &&
-          reports.length > 0 &&
-          reports.map((item, index) => {
-            return (
-              <View key={`'${index}'`}>
-                <ReportsTable
-                  isVisible={modalVisible}
-                  data={reportData}
-                  reportsLoading={reportsLoading}
-                  toggleDrawer={() => setModalVisible(!modalVisible)}
-                />
-
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    marginTop: 10,
-                    alignItems: 'center',
-                  }}>
-                  <View
-                    style={{
-                      flex: 1,
-                    }}>
-                    <Text bold subhead textGreyDark>
-                      {item?.report_name}
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: item?.fetchedData
-                        ? 'space-between'
-                        : 'flex-end',
-                      flex: 1,
-                    }}>
-                    {item?.fetchedData && (
-                      <PrimaryButton
-                        label="View"
-                        color={'white'}
-                        bgColor={colors.primary}
-                        width={'45%'}
-                        height={40}
-                        loading={false}
-                        disabled={false}
-                        onclick={() => viewData(item, index)}
-                      />
-                    )}
-                    <PrimaryButton
-                      label={item?.fetchedData ? 'Refresh' : 'Fetch'}
-                      color={'white'}
-                      bgColor={colors.primary}
-                      width={'45%'}
-                      height={40}
-                      loading={false}
-                      disabled={false}
-                      onclick={() => fetchData(item, index)}
+        {isLoading ? (
+          <View
+            style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
+            <ActivityIndicator color={colors.primary} size={'large'} />
+          </View>
+        ) : (
+          <>
+            {reports &&
+              reports.length > 0 &&
+              reports.map((item, index) => {
+                return (
+                  <View key={`'${index}'`}>
+                    <ReportsTable
+                      isVisible={modalVisible}
+                      data={reportData}
+                      reportsLoading={reportsLoading}
+                      toggleDrawer={() => setModalVisible(!modalVisible)}
                     />
+
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        marginTop: 10,
+                        alignItems: 'center',
+                      }}>
+                      <View
+                        style={{
+                          flex: 1,
+                        }}>
+                        <Text bold subhead textGreyDark>
+                          {item?.report_name}
+                        </Text>
+                      </View>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: item?.fetchedData
+                            ? 'space-between'
+                            : 'flex-end',
+                          flex: 1,
+                        }}>
+                        {item?.fetchedData && (
+                          <PrimaryButton
+                            label="View"
+                            color={'white'}
+                            bgColor={colors.primary}
+                            width={'45%'}
+                            height={40}
+                            loading={false}
+                            disabled={false}
+                            onclick={() => viewData(item, index)}
+                          />
+                        )}
+                        <PrimaryButton
+                          label={item?.fetchedData ? 'Refresh' : 'Fetch'}
+                          color={'white'}
+                          bgColor={colors.primary}
+                          width={'45%'}
+                          height={40}
+                          loading={false}
+                          disabled={false}
+                          onclick={() => fetchData(item, index)}
+                        />
+                      </View>
+                    </View>
                   </View>
-                </View>
-              </View>
-            );
-          })}
+                );
+              })}
+          </>
+        )}
       </>
     );
   };
 
   return (
     <ScrollView style={styles.main}>
-      <Header name="John Aly" />
+      <Header name={global?.user?.data?.user?.name} />
       <Row style={styles.statusRow}>
         <Row style={styles.statusRow}>
           <Label label="Status" size={14} color="grey" />

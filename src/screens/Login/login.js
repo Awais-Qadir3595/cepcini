@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, TouchableOpacity} from 'react-native';
+import {View, TouchableOpacity, ScrollView} from 'react-native';
 import {styles} from './style';
 import {Countries, Logo} from '../../assets/svgs';
 import Bold from '../../Components/core/bold';
@@ -71,17 +71,14 @@ const Login = ({navigation}) => {
           .then(async resp => {
             const data = resp?.data;
             console.log('entered   -----');
-            
+
             console.log(data.success);
-            
+
             if (data?.success) {
-            
-              
               setIsLoading(false);
-              
+
               global.user = data;
               const user = JSON.stringify(data);
-              
 
               await AsyncStorage.setItem('@UserData', user);
               await AsyncStorage.setItem('@isLoggedIn', 'true');
@@ -127,10 +124,10 @@ const Login = ({navigation}) => {
   };
 
   return (
-    <View style={styles.main}>
+    <ScrollView style={styles.main}>
       <Logo style={styles.logo} />
       <Countries style={styles.countries} />
-      <View>
+      <View style={{marginTop: 10}}>
         <Bold label="Welcome to Cepcini! 👋" size={26} color="#212B36" />
         <Label size={13} label="Get started by signing Up / Logging In" />
       </View>
@@ -188,7 +185,7 @@ const Login = ({navigation}) => {
           </TouchableOpacity>
         </Row>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 export default Login;

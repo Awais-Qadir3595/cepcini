@@ -32,8 +32,7 @@ const Index = ({isVisible, data, reportsLoading, toggleDrawer}) => {
               <ActivityIndicator color={colors.primary} size={'large'} />
             </View>
           )}
-          {data &&
-            data?.data &&
+          {data && data?.data ? (
             data?.data?.getCustomReport?.tables.map((table, tableIndex) => (
               <View key={tableIndex} style={styles.tableContainer}>
                 <Text style={styles.tableName}>{table.name}</Text>
@@ -63,7 +62,12 @@ const Index = ({isVisible, data, reportsLoading, toggleDrawer}) => {
                     ))}
                 </View>
               </View>
-            ))}
+            ))
+          ) : (
+            <View style={{justifyContent: 'center', alignItems: 'center'}}>
+              <Text>{`No Report Data Available`}</Text>
+            </View>
+          )}
         </ScrollView>
       </View>
     </Modal>
