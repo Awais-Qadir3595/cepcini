@@ -61,5 +61,19 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     alignItems: 'center',
   },
+  rightRound:{
+    height:50,width:50,backgroundColor:'grey',borderRadius:25,
+    position:'absolute', right:-50, top:'63%'
+},
+leftRound:{
+    height:50,width:50,backgroundColor:'grey',borderRadius:25,
+    top:'63%',left:-50,position:'absolute',
+},
+middle:{
+  marginTop:20
+},
+thankyou:{
+  alignSelf:'center',marginVertical:10
+}
 });
 export {styles};
