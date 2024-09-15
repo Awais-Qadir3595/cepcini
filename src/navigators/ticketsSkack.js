@@ -18,13 +18,13 @@ function TicketsStack() {
           headerShown: false,
         }}
       />
-      <Stack.Screen
+      {/* <Stack.Screen
         name="TicketsDetail"
         component={TicketsDetail}
         options={{
           headerShown: false,
         }}
-      />
+      /> */}
     </Stack.Navigator>
   );
 }

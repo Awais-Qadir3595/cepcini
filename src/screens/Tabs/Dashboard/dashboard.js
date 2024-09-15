@@ -221,12 +221,6 @@ const Dashboard = ({navigation}) => {
         </Row>
         <Row style={styles.statusRow}>
           <View style={styles.oneside}>
-            {/* <RNPickerSelect
-            onValueChange={value => setBranch(value)}
-            items={branches}
-            value={branch}
-            activeItemStyle={{color:'#000'}}
-          /> */}
             <Dropdown
               selected={branch}
               schema={{

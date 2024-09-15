@@ -1,29 +1,43 @@
 import React from 'react';
-import {ScrollView, View, StyleSheet, Dimensions} from 'react-native';
-import {Text} from '..';
+import {
+  ScrollView,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
+import {Icon, Icons, Text} from '..';
 import Modal from 'react-native-modal';
-import {BaseColor} from '../../config/theme';
+import {BaseColor, useTheme} from '../../config/theme';
 
-const Index = ({isVisible, data}) => {
+const Index = ({isVisible, data, reportsLoading, toggleDrawer}) => {
+  const colors = useTheme();
+
   return (
     <Modal
       isVisible={isVisible}
-      //   animationIn="slideInLeft"
-      //   animationOut="slideOutLeft"
-      //   onBackdropPress={toggleDrawer}
-      //   onSwipeComplete={toggleDrawer}
-      //   swipeDirection="left"
-      style={styles.drawerModal}>
+      style={styles.drawerModal}
+      onBackButtonPress={toggleDrawer}
+      onBackdropPress={toggleDrawer}>
       <View style={styles.drawerContainer}>
         <ScrollView style={styles.container}>
+          <View>
+            <TouchableOpacity onPress={toggleDrawer} style={styles.cross}>
+              <Icon name={Icons.CROSS} color={colors.primary} size={25} />
+            </TouchableOpacity>
+          </View>
+          {reportsLoading && (
+            <View
+              style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
+              <ActivityIndicator color={colors.primary} size={'large'} />
+            </View>
+          )}
           {data &&
-            data?.tables &&
-            data?.tables.map((table, tableIndex) => (
+            data?.data &&
+            data?.data?.getCustomReport?.tables.map((table, tableIndex) => (
               <View key={tableIndex} style={styles.tableContainer}>
-                {/* Table Name */}
                 <Text style={styles.tableName}>{table.name}</Text>
 
-                {/* Table Headers */}
                 <View style={styles.tableHeader}>
                   {table.columns &&
                     table?.columns.map((column, colIndex) => (
@@ -42,8 +56,7 @@ const Index = ({isVisible, data}) => {
                       <View key={rowIndex} style={styles.tableRow}>
                         {row.cells.map((cell, cellIndex) => (
                           <Text key={cellIndex} style={styles.tableCell}>
-                            {cell !== '' ? cell : '-'}{' '}
-                            {/* Display '-' if the cell is empty */}
+                            {cell !== '' ? cell : '-'}
                           </Text>
                         ))}
                       </View>
@@ -59,15 +72,25 @@ const Index = ({isVisible, data}) => {
 export default Index;
 
 const styles = StyleSheet.create({
+  cross: {
+    alignSelf: 'flex-end',
+    borderWidth: 1,
+    borderColor: BaseColor.primary,
+    borderRadius: 3,
+    height: 35,
+    width: 35,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 2,
+  },
   drawerModal: {
     margin: 0,
     justifyContent: 'flex-start',
   },
   drawerContainer: {
-    width: Dimensions.get('window').width * 0.75,
-    height: '100%',
+    height: '95%',
     backgroundColor: BaseColor.whiteColor,
-    padding: 20,
+    margin: 10,
   },
   container: {
     flex: 1,

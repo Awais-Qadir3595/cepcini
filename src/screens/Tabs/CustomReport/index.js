@@ -36,6 +36,9 @@ const CustomReport = ({navigation}) => {
   const [branchKey, setBranchKey] = useState(null);
   const [branchStatus, setBranchStatus] = useState(null);
   const [reports, setReports] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [reportData, setReportData] = useState(null);
+  const [reportsLoading, setReportsLoading] = useState(false);
 
   useEffect(() => {
     if (global?.user) {
@@ -99,12 +102,10 @@ const CustomReport = ({navigation}) => {
       .then(async resp => {
         if (resp?.data) {
           try {
-            console.log(resp?.data, '=====');
-            // setBranchStatus(resp?.data);
             setReports(resp?.data);
           } catch (e) {
             console.log(e, 'error');
-            // setBranchStatus(null);
+            setReports(null);
           }
         }
       })
@@ -125,10 +126,36 @@ const CustomReport = ({navigation}) => {
     setEndDate(currentDate);
   };
 
-  const viewData = ind => {
-    const temp = [...reports];
-    temp[ind] = {...temp[ind], openModal: temp[ind]?.openModal ?? false};
-    setReports(temp);
+  const viewData = async (ind, item) => {
+    setReportsLoading(true);
+    setModalVisible(!modalVisible);
+
+    await pusher.init({
+      apiKey: 'af92ce129c59db01ccfb',
+      cluster: 'ap2',
+    });
+    await pusher.connect();
+    await pusher.unsubscribe({channelName: `custom-reports-${branchKey}`});
+    await pusher.subscribe({
+      channelName: `custom-reports-${branchKey}`,
+      onEvent: event => {
+        if (event) {
+          const parsedData = JSON.parse(event.data);
+          setReportData(parsedData);
+        } else setReportData(null);
+        setReportsLoading(false);
+      },
+      onSubscriptionSucceeded: data => {
+        console.log(data, 'success,1');
+        setReportsLoading(false);
+      },
+      onSubscriptionError: (name, msg, err) => {
+        console.log(name, msg, err, 'error,1');
+      },
+      onError: (name, msg, err) => {
+        console.log(name, msg, err, 'error----,1');
+      },
+    });
   };
 
   const fetchData = (single, ind) => {
@@ -153,7 +180,6 @@ const CustomReport = ({navigation}) => {
         .then(async resp => {
           const data = resp?.data;
           if (data.success) {
-            console.log(data.data);
             const temp = [...reports];
             temp[ind] = {...temp[ind], fetchedData: data.data};
             setReports(temp);
@@ -197,11 +223,15 @@ const CustomReport = ({navigation}) => {
           reports.length > 0 &&
           reports.map((item, index) => {
             return (
-              <>
-               <ReportsTable isVisible={item?.openModal} data={item?.fetchedData} />
-              
+              <View key={`'${index}'`}>
+                <ReportsTable
+                  isVisible={modalVisible}
+                  data={reportData}
+                  reportsLoading={reportsLoading}
+                  toggleDrawer={() => setModalVisible(!modalVisible)}
+                />
+
                 <View
-                  key={`'${index}'`}
                   style={{
                     flexDirection: 'row',
                     justifyContent: 'space-between',
@@ -248,7 +278,7 @@ const CustomReport = ({navigation}) => {
                     />
                   </View>
                 </View>
-              </>
+              </View>
             );
           })}
       </>
@@ -261,7 +291,7 @@ const CustomReport = ({navigation}) => {
       <Row style={styles.statusRow}>
         <Row style={styles.statusRow}>
           <Label label="Status" size={14} color="grey" />
-          {branchStatus?.keep_alive ? (
+          {branchStatus ? (
             <View
               style={[
                 styles.statusValue,
