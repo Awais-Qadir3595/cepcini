@@ -1,13 +1,13 @@
 import React from 'react';
 import {View, TouchableOpacity, StyleSheet, Dimensions} from 'react-native';
 import Modal from 'react-native-modal';
-import {ImagePerson} from '../../assets/svgs';
+import {  DashboardTab, ImagePerson, IncomeReport, IncomeReportIcon, TicketIcon} from '../../assets/svgs';
 import Label from '../core/Label';
 import {BaseColor, useTheme} from '../../config/theme';
 import {Icon, Icons, Text} from '..';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
-
+ 
 const CustomDrawer = ({isDrawerVisible, toggleDrawer}) => {
   const colors = useTheme();
   const navigation = useNavigation();
@@ -50,12 +50,8 @@ const CustomDrawer = ({isDrawerVisible, toggleDrawer}) => {
 
         <TouchableOpacity style={styles.item} onPress={()=>navigation.navigate('DashboardScreen')}>
           <View style={styles.itemIcon}>
-            <Icon
-              name={Icons.LOGOUT}
-              type="ant"
-              color={colors.primary}
-              size={20}
-            />
+             <DashboardTab height={30} width={30}/>
+            
           </View>
           <Text body1>Dashboard</Text>
         </TouchableOpacity>
@@ -63,8 +59,8 @@ const CustomDrawer = ({isDrawerVisible, toggleDrawer}) => {
         <TouchableOpacity style={styles.item}>
           <View style={styles.itemIcon}>
             <Icon
-              name={Icons.LOGOUT}
-              type="ant"
+              name={Icons.security}
+              type="MaterialCommunityIcons"
               color={colors.primary}
               size={20}
             />
@@ -74,17 +70,12 @@ const CustomDrawer = ({isDrawerVisible, toggleDrawer}) => {
 
         <TouchableOpacity style={styles.item} onPress={()=>navigation.navigate('IncomeReport')}>
           <View style={styles.itemIcon}>
-            <Icon
-              name={Icons.LOGOUT}
-              type="ant"
-              color={colors.primary}
-              size={20}
-            />
+          <IncomeReportIcon color={colors.primary}/>
           </View>
           <Text body1>Income Report</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.item}>
+        {/* <TouchableOpacity style={styles.item}>
           <View style={styles.itemIcon}>
             <Icon
               name={Icons.LOGOUT}
@@ -94,7 +85,7 @@ const CustomDrawer = ({isDrawerVisible, toggleDrawer}) => {
             />
           </View>
           <Text body1>Work Period Report</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <TouchableOpacity style={styles.item} onPress={onLogout}>
           <View style={styles.itemIcon}>
