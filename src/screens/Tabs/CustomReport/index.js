@@ -1,21 +1,11 @@
-import React, {useEffect, useState} from 'react';
-import {
-  View,
-  TouchableOpacity,
-  ScrollView,
-  ActivityIndicator,
-} from 'react-native';
+import React, {useState} from 'react';
+import {View, ScrollView, ActivityIndicator} from 'react-native';
 import {styles} from './style';
 import Header from '../../../Components/custom/Header';
-import Label from '../../../Components/core/Label';
-import Row from '../../../Components/core/Row';
-import {Calender, Countries} from '../../../assets/svgs';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import Bold from '../../../Components/core/bold';
-import {useIsFocused} from '@react-navigation/native';
 import moment from 'moment';
 import {CUSTOM_REPORT, GET_REPORTS} from '../../../hooks/ROUTES';
-import {Dropdown, ReportsTable, Text} from '../../../Components';
+import {BranchAndLanguage, ReportsTable, Text} from '../../../Components';
 import axios from 'axios';
 import {Pusher} from '@pusher/pusher-websocket-react-native';
 import {useTheme} from '../../../config/theme';
@@ -25,79 +15,21 @@ import {useToast} from 'react-native-toast-notifications';
 
 const pusher = Pusher.getInstance();
 
-const CustomReport = ({navigation}) => {
+const CustomReport = ({}) => {
   const toast = useToast();
-  const isFocused = useIsFocused();
   const colors = useTheme();
   let isConnected = useIsConnected();
 
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-  const [show, setShow] = useState(false);
-  const [show1, setShow1] = useState(false);
-  const [mode, setMode] = useState('date');
-  const [branches, setBranches] = useState([]);
-  const [branch, setBranch] = useState(null);
-  const [branchKey, setBranchKey] = useState(null);
-  const [branchStatus, setBranchStatus] = useState(null);
   const [reports, setReports] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [reportData, setReportData] = useState(null);
   const [reportsLoading, setReportsLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    if (global?.user) {
-      if (global?.user?.data?.user?.client?.branches) {
-        setBranches(global?.user?.data?.user?.client?.branches);
-        setBranch(global?.user?.data?.user?.client?.branches[0]);
-        setBranchKey(global?.user?.data?.user?.client?.branches[0]?.key);
-        onGetData(global?.user?.data?.user?.client?.branches[0]);
-      }
-    }
-  }, [isFocused]);
-
-  useEffect(() => {
-    connectPusher();
-  }, [branchKey]);
-
-  const connectPusher = async () => {
-    await pusher.init({
-      apiKey: 'af92ce129c59db01ccfb',
-      cluster: 'ap2',
-    });
-
-    await pusher.connect();
-    await pusher.subscribe({
-      channelName: `ping-status-${branchKey}`,
-      onEvent: event => {
-        if (event) setBranchStatus(event);
-        else setBranchStatus(null);
-      },
-      onSubscriptionSucceeded: data => {
-        console.log(data, 'success');
-        setBranchStatus(null);
-      },
-      onSubscriptionError: (name, msg, err) => {
-        console.log(name, msg, err, 'error');
-      },
-      onError: (name, msg, err) => {
-        console.log(name, msg, err, 'error----');
-      },
-    });
-  };
-
-  const checkPingStatus = async item => {
-    await pusher.unsubscribe({channelName: `ping-status-${branchKey}`});
-    setBranch(item);
-    setBranchKey(item?.key);
-    onGetData(item);
-  };
-
-  const onGetData = item => {
+  const onGetData = () => {
     if (isConnected) {
       setIsLoading(true);
-      const url = GET_REPORTS + `/${item?.id}`;
+      const url = GET_REPORTS + `/${global?.impData?.branch?.id}`;
       axios({
         url,
         method: 'GET',
@@ -120,7 +52,7 @@ const CustomReport = ({navigation}) => {
           }
         })
         .catch(e => {
-          console.log(e);
+          console.log(e, '....');
           setIsLoading(false);
         });
     } else {
@@ -128,20 +60,6 @@ const CustomReport = ({navigation}) => {
       toast.show('No Internet Connected!');
       setIsLoading(false);
     }
-  };
-
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || startDate;
-    setShow(Platform.OS === 'ios');
-    setStartDate(currentDate);
-    onGetData(branch);
-  };
-
-  const onChange1 = (event, selectedDate) => {
-    const currentDate = selectedDate || endDate;
-    setShow1(Platform.OS === 'ios');
-    setEndDate(currentDate);
-    onGetData(branch);
   };
 
   const viewData = async (ind, item) => {
@@ -153,9 +71,11 @@ const CustomReport = ({navigation}) => {
       cluster: 'ap2',
     });
     await pusher.connect();
-    await pusher.unsubscribe({channelName: `custom-reports-${branchKey}`});
+    await pusher.unsubscribe({
+      channelName: `custom-reports-${global?.impData?.branchKey}`,
+    });
     await pusher.subscribe({
-      channelName: `custom-reports-${branchKey}`,
+      channelName: `custom-reports-${global?.impData?.branchKey}`,
       onEvent: event => {
         if (event) {
           const parsedData = JSON.parse(event.data);
@@ -181,9 +101,15 @@ const CustomReport = ({navigation}) => {
       const url = CUSTOM_REPORT;
 
       const formData = new FormData();
-      formData.append('start_date', moment(startDate).format('YYYY-MM-DD'));
-      formData.append('end_date', moment(endDate).format('YYYY-MM-DD'));
-      formData.append('branch_id', branch?.id);
+      formData.append(
+        'start_date',
+        moment(global?.impData?.startDate).format('YYYY-MM-DD'),
+      );
+      formData.append(
+        'end_date',
+        moment(global?.impData?.endDate).format('YYYY-MM-DD'),
+      );
+      formData.append('branch_id', global?.impData?.branch?.id);
       formData.append('name', single?.report_name);
 
       axios({
@@ -315,88 +241,8 @@ const CustomReport = ({navigation}) => {
   return (
     <ScrollView style={styles.main}>
       <Header name={global?.user?.data?.user?.name} />
-      <Row style={styles.statusRow}>
-        <Row style={styles.statusRow}>
-          <Label label="Status" size={14} color="grey" />
-          {branchStatus ? (
-            <View
-              style={[
-                styles.statusValue,
-                {
-                  borderColor: 'green',
-                },
-              ]}>
-              <Label label="Online" size={9} color="green" />
-            </View>
-          ) : (
-            <View
-              style={[
-                styles.statusValue,
-                {
-                  borderColor: 'red',
-                },
-              ]}>
-              <Label label="Offline" size={9} color="red" />
-            </View>
-          )}
-        </Row>
-        <Countries />
-      </Row>
 
-      <Row style={styles.branchRow}>
-        <View style={styles.oneside}>
-          <Label label="Branch" color="grey" />
-        </View>
-        <View style={styles.oneside}>
-          <Label label="Date" color="grey" />
-        </View>
-      </Row>
-      <Row style={styles.statusRow}>
-        <View style={styles.oneside}>
-          <Dropdown
-            selected={branch}
-            schema={{
-              label: 'name',
-              value: 'id',
-            }}
-            data={branches}
-            setSelected={item => checkPingStatus(item)}
-          />
-        </View>
-        <View style={styles.oneside}>
-          <Row style={{alignItems: 'center'}}>
-            <TouchableOpacity onPress={() => setShow(true)}>
-              <Label label={moment(startDate).format('DD-MM-YYYY')} size={12} />
-            </TouchableOpacity>
-            <Label label={`⇁`} size={20} style={{paddingBottom: 8}} />
-            <TouchableOpacity onPress={() => setShow1(true)}>
-              <Label label={moment(endDate).format('DD-MM-YYYY')} size={12} />
-            </TouchableOpacity>
-            <Calender />
-          </Row>
-        </View>
-      </Row>
-
-      {show && (
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={startDate}
-          mode={mode}
-          is24Hour={true}
-          display="shortdate"
-          onChange={onChange}
-        />
-      )}
-      {show1 && (
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={endDate}
-          mode={mode}
-          is24Hour={true}
-          display="shortdate"
-          onChange={onChange1}
-        />
-      )}
+      <BranchAndLanguage callBack={() => onGetData()} />
 
       <Bold label="Custom Reports" size={24} color="black" />
       {getReportsView()}

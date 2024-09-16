@@ -5,23 +5,16 @@ import Row from '../../../Components/core/Row';
 import {BackIcon, Next, Previous} from '../../../assets/svgs';
 import Label from '../../../Components/core/Label';
 import RNPickerSelect from 'react-native-picker-select';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import {Calender, Countries} from '../../../assets/svgs';
 import Bold from '../../../Components/core/bold';
 import PrimaryTextInput from '../../../Components/core/PrimaryTextInput';
 import {Axios_Fetch} from '../../../hooks/axiosCode';
 import {ROUTES} from '../../../hooks/ROUTES';
 import moment from 'moment';
 import TicketsDataComponent from '../../../Components/custom/ticketsDataComponent';
-import {useIsFocused} from '@react-navigation/native';
-import {Pusher} from '@pusher/pusher-websocket-react-native';
-import {Dropdown} from '../../../Components';
+import {BranchAndLanguage} from '../../../Components';
 import TicketModal from '../TicketReset/TicketReset';
 
-const pusher = Pusher.getInstance();
-
-const Tickets = ({navigation}) => {
-  const isFocused = useIsFocused();
+const Tickets = ({}) => {
   const selectedTicketsData = [
     {label: 'Open', value: 1},
     {label: 'Close', value: 2},
@@ -32,105 +25,35 @@ const Tickets = ({navigation}) => {
     {label: '50', value: 50},
   ];
 
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-  const [show, setShow] = useState(false);
   const [ticketList, setTicketsList] = useState([]);
   const [paginate, setPaginate] = useState(1);
-  const [show1, setShow1] = useState(false);
   const [pageNo, setPageNo] = useState(1);
   const [pageSize, setPageSize] = useState(pagesizeList[0].value);
   const [selectedTicketsValue, setSelectedTicketsValue] = useState(
     selectedTicketsData[0].value,
   );
-  const [branches, setBranches] = useState([]);
-  const [branch, setBranch] = useState(null);
-  const [branchKey, setBranchKey] = useState(null);
-  const [branchStatus, setBranchStatus] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
   const [singleTicket, setSingleTicket] = useState(null);
 
   useEffect(() => {
-    if (global?.user) {
-      if (global?.user?.data?.user?.client?.branches) {
-        setBranches(global?.user?.data?.user?.client?.branches);
-        setBranch(global?.user?.data?.user?.client?.branches[0]);
-        setBranchKey(global?.user?.data?.user?.client?.branches[0]?.key);
-      }
-    }
-  }, [isFocused]);
-
-  useEffect(() => {
-    connectPusher();
-  }, [branchKey]);
-
-  const connectPusher = async () => {
-    await pusher.init({
-      apiKey: 'af92ce129c59db01ccfb',
-      cluster: 'ap2',
-    });
-
-    await pusher.connect();
-    await pusher.subscribe({
-      channelName: `ping-status-${branchKey}`,
-      onEvent: event => {
-        if (event) setBranchStatus(event);
-        else setBranchStatus(null);
-      },
-      onSubscriptionSucceeded: data => {
-        console.log(data, 'success');
-        setBranchStatus(null);
-      },
-      onSubscriptionError: (name, msg, err) => {
-        console.log(name, msg, err, 'error');
-      },
-      onError: (name, msg, err) => {
-        console.log(name, msg, err, 'error----');
-      },
-    });
-  };
-
-  const checkPingStatus = async item => {
-    await pusher.unsubscribe({channelName: `ping-status-${branchKey}`});
-    setBranch(item);
-    setBranchKey(item?.key);
-  };
-
-  useEffect(() => {
     getSpecificTickets();
-  }, [branch, pageNo, pageSize, startDate, endDate]);
+  }, [pageNo, pageSize]);
 
   const getSpecificTickets = async () => {
-    let sdate = moment(startDate).format('YYYY-MM-DD');
-    let edate = moment(endDate).format('YYYY-MM-DD');
+    let sdate = moment(global?.impData?.startDate).format('YYYY-MM-DD');
+    let edate = moment(global?.impData?.endDate).format('YYYY-MM-DD');
 
-    let id = branch?.id;
     let data = await Axios_Fetch(
-      `${ROUTES.ticketsStatus}?paginate=${paginate}&page_size=${pageSize}&from_date=${sdate}&to_date=${edate}&branch_id=${id}&page=${pageNo}`,
+      `${ROUTES.ticketsStatus}?paginate=${paginate}&page_size=${pageSize}&from_date=${sdate}&to_date=${edate}&branch_id=${global?.impData?.branch?.id}&page=${pageNo}`,
     );
 
     setTicketsList(data?.data);
   };
 
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || startDate;
-    setShow(Platform.OS === 'ios');
-    setStartDate(currentDate);
-  };
-
-  const onChange1 = (event, selectedDate) => {
-    const currentDate = selectedDate || endDate;
-    setShow1(Platform.OS === 'ios');
-    setEndDate(currentDate);
-  };
-
   const renderData = ({item}) => {
     const goToDetails = () => {
-      console.log(item);
       setIsVisible(true);
       setSingleTicket(item);
-
-      // () => navigation.navigate('TicketsDetail')
     };
     return (
       <TouchableOpacity onPress={goToDetails}>
@@ -156,90 +79,9 @@ const Tickets = ({navigation}) => {
           <BackIcon />
           <Label label="Tickets List" size={20} style={styles.heading} />
         </Row>
-        <Row style={styles.statusRow}>
-          <Row style={styles.statusRow}>
-            <Label label="Status" size={14} color="grey" />
-            {branchStatus ? (
-              <View
-                style={[
-                  styles.statusValue,
-                  {
-                    borderColor: 'green',
-                  },
-                ]}>
-                <Label label="Online" size={9} color="green" />
-              </View>
-            ) : (
-              <View
-                style={[
-                  styles.statusValue,
-                  {
-                    borderColor: 'red',
-                  },
-                ]}>
-                <Label label="Offline" size={9} color="red" />
-              </View>
-            )}
-          </Row>
-          <Countries />
-        </Row>
-        <Row style={styles.branchRow}>
-          <View style={styles.oneside}>
-            <Label label="Branch" color="grey" />
-          </View>
-          <View style={styles.oneside}>
-            <Label label="Date" color="grey" />
-          </View>
-        </Row>
-        <Row style={styles.statusRow}>
-          <View style={styles.oneside}>
-            <Dropdown
-              selected={branch}
-              schema={{
-                label: 'name',
-                value: 'id',
-              }}
-              data={branches}
-              setSelected={item => checkPingStatus(item)}
-            />
-          </View>
-          <View style={styles.oneside}>
-            <Row style={{alignItems: 'center'}}>
-              <TouchableOpacity onPress={() => setShow(true)}>
-                <Label
-                  label={moment(startDate).format('YYYY-MM-DD')}
-                  size={12}
-                />
-              </TouchableOpacity>
-              <Label label={`⇁`} size={20} style={{paddingBottom: 8}} />
-              <TouchableOpacity onPress={() => setShow1(true)}>
-                <Label label={moment(endDate).format('YYYY-MM-DD')} size={12} />
-              </TouchableOpacity>
-              <Calender />
-            </Row>
-          </View>
-        </Row>
 
-        {show && (
-          <DateTimePicker
-            testID="dateTimePicker"
-            value={startDate}
-            mode={'date'}
-            is24Hour={true}
-            display="shortdate"
-            onChange={onChange}
-          />
-        )}
-        {show1 && (
-          <DateTimePicker
-            testID="dateTimePicker"
-            value={endDate}
-            mode={'date'}
-            is24Hour={true}
-            display="shortdate"
-            onChange={onChange1}
-          />
-        )}
+        <BranchAndLanguage callBack={() => getSpecificTickets()} />
+
         <Bold label="Branch Tickets List" size={24} color="black" />
         <Label
           label="Tickets / Tickets List"
@@ -386,8 +228,6 @@ const Tickets = ({navigation}) => {
               }
               renderItem={renderData}
               keyExtractor={(item, index) => index.toString()}
-              c
-              // extraData={selectedTicketsValue}
             />
             <Row style={styles.lowerView}>
               {selectedTicketsValue == 1 ? (
@@ -439,13 +279,6 @@ const Tickets = ({navigation}) => {
         ) : (
           <Label label="No data to show" size={12} style={styles.noDate} />
         )}
-
-        {/* {
-                ticketList?.closed_tickets?.tickets?.data.length!=0 != null && ticketList?.open_tickets?.tickets?.data != 0 ?
-                 
-                    : 
-                    <Label label="No data to show"/>
-            } */}
       </ScrollView>
     </>
   );

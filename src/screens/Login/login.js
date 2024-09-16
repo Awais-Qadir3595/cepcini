@@ -78,6 +78,13 @@ const Login = ({navigation}) => {
               setIsLoading(false);
 
               global.user = data;
+              global.impData = {
+                startDate: new Date(),
+                endDate: new Date(),
+                branch: data?.data?.user?.client?.branches[0],
+                branchKey: global?.user?.data?.user?.client?.branches[0]?.key,
+                branchStatus: null,
+              };
               const user = JSON.stringify(data);
 
               await AsyncStorage.setItem('@UserData', user);
