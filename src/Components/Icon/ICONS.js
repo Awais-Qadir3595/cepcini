@@ -18,6 +18,8 @@ export const NOTIFICATION_DISABLED = 'notifications-off';
 export const PLUS_ICON = 'plus-circle-outline';
 export const MINUS_ICON = 'minus-circle-outline';
 export const REFRESH = 'refresh';
+export const security = 'security';
+
 
 /** meaterial icon */
 export const MOBILE = 'mobile-off';
@@ -26,6 +28,9 @@ export const EYE_ICON_OPEN = 'eye';
 export const ARROW_BACK = 'arrow-back';
 export const PENDING = 'pending-actions';
 export const QUERY_STATS = 'query-stats';
+export const privacy_tip = 'privacy-tip';
+ 
+
 
 /** ant desing icon use */
 export const SELECT_DOWN = 'caretdown';
