@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {View, Image} from 'react-native';
 import {Logo} from '../../assets/svgs';
 import {styles} from './style';
@@ -6,8 +6,7 @@ import PrimaryButton from '../../Components/core/button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Splash = ({navigation}) => {
-
-  const [isLoading,setISLoading]=useState(false);
+  const [isLoading, setISLoading] = useState(false);
   const onGetStarted = async () => {
     setISLoading(true);
     try {
@@ -15,6 +14,9 @@ const Splash = ({navigation}) => {
       const userInfo = await AsyncStorage.getItem('@UserData');
       const user = userInfo != null ? JSON.parse(userInfo) : null;
       global.user = user;
+      const impData = await AsyncStorage.getItem('@ImpData');
+      const temp = userInfo != null ? JSON.parse(impData) : null;
+      global.impData = temp;
       setISLoading(false);
       navigation.replace(isLoggedIn === 'true' ? 'MyTabs' : 'Login');
     } catch (e) {

@@ -86,8 +86,10 @@ const Login = ({navigation}) => {
                 branchStatus: null,
               };
               const user = JSON.stringify(data);
+              const impData = JSON.stringify(data);
 
               await AsyncStorage.setItem('@UserData', user);
+              await AsyncStorage.setItem('@ImpData', impData);
               await AsyncStorage.setItem('@isLoggedIn', 'true');
               if (remMe) {
                 const jsonValue = JSON.stringify({

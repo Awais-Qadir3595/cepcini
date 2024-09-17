@@ -9,6 +9,7 @@ import moment from 'moment';
 import {Dropdown} from '..';
 import {useIsFocused} from '@react-navigation/native';
 import {Pusher} from '@pusher/pusher-websocket-react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const pusher = Pusher.getInstance();
 
@@ -19,8 +20,8 @@ const Index = ({callBack}) => {
   const [branchStatus, setBranchStatus] = useState(null);
 
   useEffect(() => {
-    callBack();
     setBranchStatus(global.impData?.branchStatus);
+    callBack();
   }, [isFocused]);
 
   useEffect(() => {
@@ -36,24 +37,30 @@ const Index = ({callBack}) => {
     await pusher.connect();
     await pusher.subscribe({
       channelName: `ping-status-${global?.impData?.branchKey}`,
-      onEvent: event => {
+      onEvent: async event => {
         if (event) {
           var temp = global.impData;
           temp = {...temp, branchStatus: event};
           global.impData = temp;
+          const impData = JSON.stringify(temp);
+          await AsyncStorage.setItem('@ImpData', impData);
           setBranchStatus(event);
         } else {
           var temp = global.impData;
           temp = {...temp, branchStatus: null};
           global.impData = temp;
+          const impData = JSON.stringify(temp);
+          await AsyncStorage.setItem('@ImpData', impData);
           setBranchStatus(null);
         }
       },
-      onSubscriptionSucceeded: data => {
+      onSubscriptionSucceeded: async data => {
         console.log(data, 'success');
         var temp = global.impData;
         temp = {...temp, branchStatus: null};
         global.impData = temp;
+        const impData = JSON.stringify(temp);
+        await AsyncStorage.setItem('@ImpData', impData);
         setBranchStatus(null);
       },
       onSubscriptionError: (name, msg, err) => {
@@ -72,24 +79,30 @@ const Index = ({callBack}) => {
     var temp = global.impData;
     temp = {...temp, branch: item, branchKey: item?.key};
     global.impData = temp;
+    const impData = JSON.stringify(temp);
+    await AsyncStorage.setItem('@ImpData', impData);
     callBack();
   };
 
-  const onChange = (event, selectedDate) => {
+  const onChange = async (event, selectedDate) => {
     const currentDate = selectedDate || global?.impData?.startDate;
     setShow(Platform.OS === 'ios');
     var temp = global.impData;
     temp = {...temp, startDate: currentDate};
     global.impData = temp;
+    const impData = JSON.stringify(temp);
+    await AsyncStorage.setItem('@ImpData', impData);
     callBack();
   };
 
-  const onChange1 = (event, selectedDate) => {
+  const onChange1 = async (event, selectedDate) => {
     const currentDate = selectedDate || global?.impData?.endDate;
     setShow1(Platform.OS === 'ios');
     var temp = global.impData;
     temp = {...temp, endDate: currentDate};
     global.impData = temp;
+    const impData = JSON.stringify(temp);
+    await AsyncStorage.setItem('@ImpData', impData);
     callBack();
   };
 
@@ -167,7 +180,7 @@ const Index = ({callBack}) => {
       {show && (
         <DateTimePicker
           testID="dateTimePicker"
-          value={global?.impData?.startDate}
+          value={new Date(global?.impData?.startDate)}
           mode={'date'}
           is24Hour={true}
           display="shortdate"
@@ -177,7 +190,7 @@ const Index = ({callBack}) => {
       {show1 && (
         <DateTimePicker
           testID="dateTimePicker"
-          value={global?.impData?.endDate}
+          value={new Date(global?.impData?.endDate)}
           mode={'date'}
           is24Hour={true}
           display="shortdate"

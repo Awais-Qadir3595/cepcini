@@ -23,7 +23,10 @@ const CustomReport = ({}) => {
   const [reports, setReports] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [reportData, setReportData] = useState(null);
-  const [reportsLoading, setReportsLoading] = useState(false);
+  const [reportsLoading, setReportsLoading] = useState({
+    loading: false,
+    name: '',
+  });
   const [isLoading, setIsLoading] = useState(false);
 
   const onGetData = () => {
@@ -63,8 +66,7 @@ const CustomReport = ({}) => {
   };
 
   const viewData = async (ind, item) => {
-    setReportsLoading(true);
-    setModalVisible(!modalVisible);
+    setModalVisible(true);
 
     await pusher.init({
       apiKey: 'af92ce129c59db01ccfb',
@@ -81,11 +83,11 @@ const CustomReport = ({}) => {
           const parsedData = JSON.parse(event.data);
           setReportData(parsedData);
         } else setReportData(null);
-        setReportsLoading(false);
+        setReportsLoading({loading: false, name: ''});
       },
       onSubscriptionSucceeded: data => {
         console.log(data, 'success,1');
-        setReportsLoading(false);
+        setReportsLoading({loading: false, name: ''});
       },
       onSubscriptionError: (name, msg, err) => {
         console.log(name, msg, err, 'error,1');
@@ -97,51 +99,60 @@ const CustomReport = ({}) => {
   };
 
   const fetchData = (single, ind) => {
-    if (isConnected) {
-      const url = CUSTOM_REPORT;
+    if (global.impData?.branchStatus) {
+      if (isConnected) {
+        setReportsLoading({loading: true, name: single?.report_name});
+        const url = CUSTOM_REPORT;
 
-      const formData = new FormData();
-      formData.append(
-        'start_date',
-        moment(global?.impData?.startDate).format('YYYY-MM-DD'),
-      );
-      formData.append(
-        'end_date',
-        moment(global?.impData?.endDate).format('YYYY-MM-DD'),
-      );
-      formData.append('branch_id', global?.impData?.branch?.id);
-      formData.append('name', single?.report_name);
+        const formData = new FormData();
+        formData.append(
+          'start_date',
+          moment(global?.impData?.startDate).format('YYYY-MM-DD'),
+        );
+        formData.append(
+          'end_date',
+          moment(global?.impData?.endDate).format('YYYY-MM-DD'),
+        );
+        formData.append('branch_id', global?.impData?.branch?.id);
+        formData.append('name', single?.report_name);
 
-      axios({
-        method: 'POST',
-        url: url,
-        data: formData,
-        headers: {
-          Authorization: `Bearer ${global?.user?.data?.token}`,
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-        .then(async resp => {
-          const data = resp?.data;
-          if (data.success) {
-            const temp = [...reports];
-            temp[ind] = {...temp[ind], fetchedData: data.data};
-            setReports(temp);
-            toast.hideAll();
-            toast.show('Data Fetched!, You can view it.');
-          } else {
+        axios({
+          method: 'POST',
+          url: url,
+          data: formData,
+          headers: {
+            Authorization: `Bearer ${global?.user?.data?.token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+          .then(async resp => {
+            const data = resp?.data;
+            if (data.success) {
+              const temp = [...reports];
+              temp[ind] = {...temp[ind], fetchedData: data.data};
+              setReports(temp);
+              viewData();
+              // toast.hideAll();
+              // toast.show('Data Fetched!, You can view it.');
+            } else {
+              toast.hideAll();
+              toast.show('Something went wrong');
+              setReportsLoading({loading: false, name: ''});
+            }
+          })
+          .catch(e => {
+            console.log(e);
             toast.hideAll();
             toast.show('Something went wrong');
-          }
-        })
-        .catch(e => {
-          console.log(e);
-          toast.hideAll();
-          toast.show('Something went wrong');
-        });
+            setReportsLoading({loading: false, name: ''});
+          });
+      } else {
+        toast.hideAll();
+        toast.show('No Internet Connection!');
+      }
     } else {
       toast.hideAll();
-      toast.show('No Internet Connection!');
+      toast.show(`Can't Fetch, Selected Branch is offline`);
     }
   };
 
@@ -178,7 +189,7 @@ const CustomReport = ({}) => {
                     <ReportsTable
                       isVisible={modalVisible}
                       data={reportData}
-                      reportsLoading={reportsLoading}
+                      reportsLoading={reportsLoading?.loading}
                       toggleDrawer={() => setModalVisible(!modalVisible)}
                     />
 
@@ -200,30 +211,20 @@ const CustomReport = ({}) => {
                       <View
                         style={{
                           flexDirection: 'row',
-                          justifyContent: item?.fetchedData
-                            ? 'space-between'
-                            : 'flex-end',
+                          justifyContent: 'flex-end',
                           flex: 1,
                         }}>
-                        {item?.fetchedData && (
-                          <PrimaryButton
-                            label="View"
-                            color={'white'}
-                            bgColor={colors.primary}
-                            width={'45%'}
-                            height={40}
-                            loading={false}
-                            disabled={false}
-                            onclick={() => viewData(item, index)}
-                          />
-                        )}
                         <PrimaryButton
-                          label={item?.fetchedData ? 'Refresh' : 'Fetch'}
+                          label={'Fetch'}
                           color={'white'}
                           bgColor={colors.primary}
                           width={'45%'}
                           height={40}
-                          loading={false}
+                          loading={
+                            reportsLoading?.name == item?.report_name
+                              ? reportsLoading?.loading
+                              : false
+                          }
                           disabled={false}
                           onclick={() => fetchData(item, index)}
                         />

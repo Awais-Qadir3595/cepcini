@@ -26,47 +26,51 @@ const Index = ({isVisible, data, reportsLoading, toggleDrawer}) => {
               <Icon name={Icons.CROSS} color={colors.primary} size={25} />
             </TouchableOpacity>
           </View>
-          {reportsLoading && (
+          {reportsLoading ? (
             <View
               style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
               <ActivityIndicator color={colors.primary} size={'large'} />
+              <Text>{`Loading Report Data ...`}</Text>
             </View>
-          )}
-          {data && data?.data ? (
-            data?.data?.getCustomReport?.tables.map((table, tableIndex) => (
-              <View key={tableIndex} style={styles.tableContainer}>
-                <Text style={styles.tableName}>{table.name}</Text>
+          ) : (
+            <>
+              {data && data?.data ? (
+                data?.data?.getCustomReport?.tables.map((table, tableIndex) => (
+                  <View key={tableIndex} style={styles.tableContainer}>
+                    <Text style={styles.tableName}>{table.name}</Text>
 
-                <View style={styles.tableHeader}>
-                  {table.columns &&
-                    table?.columns.map((column, colIndex) => (
-                      <Text key={colIndex} style={styles.columnHeader}>
-                        {column.header !== null
-                          ? column.header
-                          : `Column ${colIndex + 1}`}
-                      </Text>
-                    ))}
-                </View>
-
-                {/* Table Rows */}
-                <View>
-                  {table.rows &&
-                    table?.rows.map((row, rowIndex) => (
-                      <View key={rowIndex} style={styles.tableRow}>
-                        {row.cells.map((cell, cellIndex) => (
-                          <Text key={cellIndex} style={styles.tableCell}>
-                            {cell !== '' ? cell : '-'}
+                    <View style={styles.tableHeader}>
+                      {table.columns &&
+                        table?.columns.map((column, colIndex) => (
+                          <Text key={colIndex} style={styles.columnHeader}>
+                            {column.header !== null
+                              ? column.header
+                              : `Column ${colIndex + 1}`}
                           </Text>
                         ))}
-                      </View>
-                    ))}
+                    </View>
+
+                    {/* Table Rows */}
+                    <View>
+                      {table.rows &&
+                        table?.rows.map((row, rowIndex) => (
+                          <View key={rowIndex} style={styles.tableRow}>
+                            {row.cells.map((cell, cellIndex) => (
+                              <Text key={cellIndex} style={styles.tableCell}>
+                                {cell !== '' ? cell : '-'}
+                              </Text>
+                            ))}
+                          </View>
+                        ))}
+                    </View>
+                  </View>
+                ))
+              ) : (
+                <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                  <Text>{`No Report Data Available`}</Text>
                 </View>
-              </View>
-            ))
-          ) : (
-            <View style={{justifyContent: 'center', alignItems: 'center'}}>
-              <Text>{`No Report Data Available`}</Text>
-            </View>
+              )}
+            </>
           )}
         </ScrollView>
       </View>
