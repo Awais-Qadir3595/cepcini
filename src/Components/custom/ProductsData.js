@@ -4,7 +4,7 @@ import Row from '../core/Row';
 import Label from '../core/Label';
 import {EditIcon} from '../../assets/svgs';
 
-export default function ProductsData({id, name, price, onEdit}) {
+export default function ProductsData({id, name, groupCode, price, onEdit}) {
   return (
     <Row style={styles.main}>
       <View style={styles.viewId}>
@@ -14,10 +14,14 @@ export default function ProductsData({id, name, price, onEdit}) {
         <Label label={name} size={10} />
       </View>
       <View style={styles.viewName}>
+        <Label label={groupCode} size={10} />
+      </View>
+      <View style={styles.viewName}>
         <Label label={price} size={12} />
       </View>
       <TouchableOpacity style={styles.icons} onPress={onEdit}>
         <EditIcon />
+        {/* <DeleteIcon/> */}
       </TouchableOpacity>
     </Row>
   );

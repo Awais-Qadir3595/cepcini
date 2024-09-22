@@ -3312,7 +3312,6 @@ __metadata:
     react: 18.3.1
     react-native: 0.75.2
     react-native-chart-kit: ^6.12.0
-    react-native-datatable-component: ^2.1.14
     react-native-gifted-charts: ^1.4.31
     react-native-linear-gradient: ^2.8.3
     react-native-modal: ^13.0.1
@@ -8693,16 +8692,6 @@ __metadata:
     react-native: ">= 0.50.0"
     react-native-svg: "> 6.4.1"
   checksum: 04c225965c0ce3c71205a62bc92743e9188458d8f95c12481e43a2e53c425bd5db8274e57ab93c1cb95ffd3fb54950ca92c3d33e518a3505d7697c247b3b7e15
-  languageName: node
-  linkType: hard
-
-"react-native-datatable-component@npm:^2.1.14":
-  version: 2.1.14
-  resolution: "react-native-datatable-component@npm:2.1.14"
-  peerDependencies:
-    react: 17.0.1
-    react-native: 0.64.2
-  checksum: 4f697677a9e81f2b139d601e3dd40873f6210f41076d386df74b1d762a2227ff5ce1c762720573b699c5aeff8f8bdf6783bb33d22de3cb8db08c4ed00455aacc
   languageName: node
   linkType: hard
 

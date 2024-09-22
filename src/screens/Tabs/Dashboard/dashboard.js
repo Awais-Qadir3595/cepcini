@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, ScrollView, ActivityIndicator} from 'react-native';
+import {View, ScrollView, ActivityIndicator, Dimensions} from 'react-native';
 import {styles} from './style';
 import Header from '../../../Components/custom/Header';
 import Label from '../../../Components/core/Label';
@@ -11,7 +11,9 @@ import moment from 'moment';
 import {BranchAndLanguage} from '../../../Components';
 import {GET_DASHBOARD} from '../../../hooks/ROUTES';
 import axios from 'axios';
-import DataTable, {COL_TYPES} from 'react-native-datatable-component';
+import DataTable, {
+  COL_TYPES,
+} from '../../../Components/react-native-datatable-component/src/DataTable';
 import {useTheme} from '../../../config/theme';
 import {BarChart} from 'react-native-gifted-charts';
 import {ruleTypes} from 'gifted-charts-core';
@@ -140,7 +142,7 @@ const Dashboard = ({navigation}) => {
         <View style={styles.salesContainer}>
           <Label label="Sales" />
           <Label label="Sales view" color={colors.textGrey} />
-          <Row style={styles.radio}>
+          {/* <Row style={styles.radio}>
             <Radio
               selected={type1}
               label="type 1"
@@ -151,8 +153,8 @@ const Dashboard = ({navigation}) => {
               label="type 2"
               onClick={() => onTypeClick(2)}
             />
-          </Row>
-          <ScrollView horizontal={true}>
+          </Row> */}
+          <ScrollView style={{marginTop: 10}} horizontal={true}>
             {graphData !== null && graphData.length > 0 ? (
               <BarChart
                 data={graphData}
@@ -229,6 +231,7 @@ const Dashboard = ({navigation}) => {
             {dashData?.user_based_sale &&
             dashData?.user_based_sale.length > 0 ? (
               <DataTable
+                width={Dimensions.get('screen').width - 30}
                 data={dashData?.user_based_sale ?? []}
                 colNames={['user', 'total_amount']}
                 colSettings={[

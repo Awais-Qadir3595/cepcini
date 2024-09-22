@@ -182,7 +182,7 @@ const Products = ({navigation}) => {
     setModalPrice(false);
   };
   return (
-    <View style={styles.main}>
+    <ScrollView style={styles.main}>
       <Row style={styles.rw}>
         <BackIcon />
         <Label label="Products List" size={20} style={styles.heading} />
@@ -308,21 +308,40 @@ const Products = ({navigation}) => {
         </View>
 
         <View style={{width: '20%', alignItems: 'center'}}>
+          <Label label="Portion" size={10} />
+        </View>
+
+        <View style={{width: '20%', alignItems: 'center'}}>
           <Label label="Price" size={10} />
         </View>
 
         <View style={{width: '20%', alignItems: 'center'}}>
-          <Label label="" size={10} />
+          <Label label="Action" size={10} />
         </View>
       </Row>
 
       {productsList != null ? (
-        <FlatList
-          data={productsList}
-          renderItem={renderData}
-          keyExtractor={(item, index) => index.toString()}
-        />
+        <>
+          {productsList.map((item, index) => {
+            return (
+              <View key={`'${index}'`}>
+                <ProductsData
+                  name={item?.name}
+                  id={item.id}
+                  groupCode={item.groupCode}
+                  price={item?.product_price}
+                  onEdit={() => editClicked(item.id, item?.product_price)}
+                />
+              </View>
+            );
+          })}
+        </>
       ) : (
+        // <FlatList
+        //   data={productsList}
+        //   renderItem={renderData}
+        //   keyExtractor={(item, index) => index.toString()}
+        // />
         <ActivityIndicator
           size={'small'}
           color={colorsTheme.primary}
@@ -388,7 +407,7 @@ const Products = ({navigation}) => {
           />
         </View>
       </Modal>
-    </View>
+    </ScrollView>
   );
 };
 export default Products;

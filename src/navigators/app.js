@@ -7,12 +7,14 @@ import MyTabs from './MyTabs';
 import {ToastProvider} from 'react-native-toast-notifications';
 import {NetworkProvider} from 'react-native-offline';
 import IncomeReport from '../screens/Tabs/IncomeReport/incomeReport';
+import {StatusBar} from 'react-native';
 
 const Stack = createNativeStackNavigator();
 
 function App() {
   return (
     <ToastProvider>
+      <StatusBar barStyle={'light-content'} backgroundColor={'#000'} />
       <NetworkProvider>
         <NavigationContainer>
           <Stack.Navigator>
